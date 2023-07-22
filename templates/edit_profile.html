@@ -1,0 +1,116 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+</head>
+<style>
+  body {
+    background-image: url("{% static 'hp1.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .profile-card {
+    border: 2px solid #ccc; 
+    background-color: #f9f9f9; 
+    padding: 20px; 
+    border-radius: 10px;
+} 
+</style>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="profile-card">
+                {% if messages %}
+                {% for message in messages %}
+                  {% if message.tags == 'success' %}
+                    <div class="alert alert-success">
+                      {{ message }}
+                    </div>
+                  {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger">
+                      {{ message }}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+              <h2>Edit Profile</h2>
+               <form method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="{{ form.full_name.id_for_label }}">Full Name:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="{{ form.full_name.id_for_label }}" name="{{ form.full_name.html_name }}" value="{{ form.full_name.value }}">
+                    </div>
+                  </div>
+
+                
+                  </div>       
+                
+               
+                
+                  <div class="form-group">
+                    <label for="{{ form.contact_number.id_for_label }}">Contact Number:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="{{ form.contact_number.id_for_label }}" name="{{ form.contact_number.html_name }}" value="{{ form.contact_number.value }}">
+                      <input type="number" class="form-control" id="{{ form.contact_number.id_for_label }}" name="{{ form.contact_number.html_name }}" value="{{ form.contact_number.value }}">
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth:</label>
+                    <div class="input-group">
+                      <input type="date" class="form-control" id="{{ form.date_of_birth.id_for_label }}" name="{{ form.date_of_birth.html_name }}" value="{{ form.date_of_birth.value }}">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="{{ form.bio.id_for_label }}">Bio:</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="{{ form.bio.id_for_label }}" name="{{ form.bio.html_name }}" value="{{ form.bio.value }}">
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="{{ form.profile_picture.id_for_label }}">Profile Picture:</label>
+                    <div class="input-group">
+                      <input type="file" class="form-control custom-file-input" id="{{ form.profile_picture.id_for_label }}" name="{{ form.profile_picture.html_name }}">
+                      {% if form.profile_picture.value %}
+                        <img src="{{ form.profile_picture.value.url }}" alt="Profile Picture" style="max-width: 20px;">
+                      {% endif %}
+                    </div>
+                  </div>
+     
+                <label for="remove_profile_picture">Remove Profile Picture</label>
+              <input type="checkbox" name="remove_profile_picture" id="remove_profile_picture">
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+          
+    </form>
+
+      <div>
+        <a href="{% url 'delete_account' %}">
+          <button type="button" class="btn btn-danger">Delete Account</button>
+      </a>
+      <a href="{% url 'profile' %}">
+        <button type="button" class="btn btn-secondary">Back to profile</button>
+       </a>
+
+      </div>
+           </div>
+       </div>
+    </div>
+</div>  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+
+</html>

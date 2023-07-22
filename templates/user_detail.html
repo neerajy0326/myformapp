@@ -1,0 +1,106 @@
+{% load tz %} {% load static %}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+
+    <style>
+        .blog-list-item {
+            border: 4px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
+          }
+        
+          body {
+            background-image: url("{% static 'hp1.jpeg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+          }
+        
+          .profile-card {
+            border: 2px solid #ccc; 
+            background-color: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 10px;
+          }
+          .pic {
+            width: 100px; 
+            height: 100px; 
+            border-radius: 10%; 
+            margin-right: 10px; 
+        }
+
+        .custom-marker {
+            list-style-type: none; 
+            margin-left: -20px; 
+          }
+          .custom-marker:before {
+            content: ""; 
+            margin-right: 10px; 
+          }
+
+          a {
+            text-decoration: none; 
+            color: #000; 
+        }
+        
+        
+        </style>
+</head>
+<body>
+    <div class="container mt-5">
+     <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="profile-card blog-list-profile-card">
+              <div class="header-container">
+                <h2> User detail </h2>
+                <h2><strong> {{ user.username }} </strong></h2>
+                {% if user.profile_picture %}
+                   <div class="photo-container">
+                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="pic">
+                {% else %}
+                <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="pic">
+                   </div>
+                {% endif %}
+                <p>Username: <strong> {{ user.username }} </strong></p>
+                <p>Full Name: {{ user.full_name }}</p>
+                
+                  
+                  <div>
+                    <h3>Blog Posts: {{ user_blogs_count }}</h3>
+                {% if user.bio %}
+                <p>{{ user.bio }}</p>
+                {% endif %}
+                
+                <p>{{ user.full_name }}</p>
+                         
+                  <div>
+                    <h4>Blog Posts: {{ user_blogs_count }}</h4>
+                    <ul>
+                      {% for blog in user_blogs %}
+                          <li class="blog-list-item custom-marker">
+                              <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
+                          </li>
+                      {% empty %}
+                          <li class="blog-list-item custom-marker">No blog posts yet.</li>
+                      {% endfor %}
+                  </ul>
+                </div>
+            </div>
+            
+        </div>
+      </div>
+
+      
+     </div> 
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+</body>
+</html>

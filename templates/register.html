@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Register {% endblock title %}
+{% block head %}
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<style>
+  body {
+    background-image: url("{% static 'hp1.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style>
+
+{% endblock head %}
+{% block body %}
+<div class="login-form">
+  {% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      <div class="alert alert-success">
+        {{ message }}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+  <form method="post" action="{% url 'register' %}">
+
+    {% if form.errors %}
+    <div class="alert alert-danger">
+      
+      <ul>
+        {% for field_errors in form.errors %}
+          {% for error in field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+    
+    <h1>Register</h1>
+    <div class="content">
+      <div class="input-field">
+        <input type="text" name="full_name" placeholder="Full name" autocomplete="new-password">
+      </div>
+      <div class="input-field">
+        <input type="username" name="username" placeholder="Username">
+      </div>
+      <div class="input-field">
+        <input type="email" name="email" placeholder="Email" autocomplete="nope">
+      </div>
+      <div class="input-field">
+        <input type="text" name="contact_number" placeholder="Contact number" autocomplete="new-password">
+      </div>
+     
+      <div class="input-field">
+        <input type="password" name="password" placeholder="Password" autocomplete="new-password">
+      </div>
+      
+      
+   
+    </div>
+    <div class="action">
+      <button onclick="location.href = '/login_page'" type="button">Already registered?</button>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+
+{% endblock body %}
