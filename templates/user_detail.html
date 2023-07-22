@@ -59,7 +59,7 @@
         <div class="col-md-6">
           <div class="profile-card blog-list-profile-card">
               <div class="header-container">
-                <h2> User detail </h2>
+                
                 <h2><strong> {{ user.username }} </strong></h2>
                 {% if user.profile_picture %}
                    <div class="photo-container">
@@ -72,8 +72,6 @@
                 <p>Full Name: {{ user.full_name }}</p>
                 
                   
-                  <div>
-                    <h3>Blog Posts: {{ user_blogs_count }}</h3>
                 {% if user.bio %}
                 <p>{{ user.bio }}</p>
                 {% endif %}
@@ -81,7 +79,7 @@
                 <p>{{ user.full_name }}</p>
                          
                   <div>
-                    <h4>Blog Posts: {{ user_blogs_count }}</h4>
+                    <h3>Blog Posts: {{ user_blogs_count }}</h3>
                     <ul>
                       {% for blog in user_blogs %}
                           <li class="blog-list-item custom-marker">
