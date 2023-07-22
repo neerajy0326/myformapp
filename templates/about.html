@@ -1,0 +1,58 @@
+
+
+{% extends 'base.html' %} {% load static %}
+{% block title %} About {% endblock title %}
+
+{% block head %}
+
+<style>
+  body {
+    background-image: url("{% static 'hp1.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+</style>
+{% endblock head %}
+{% block body %}
+<div class="container row row-cols-1 row-cols-md-3 g-4" style="padding-top: 25px;">
+    <div class="col">
+      <div class="card">
+        <img src="static/Neeraj.jpeg" class="card-img-top custom-img-size" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Neeraj</h5>
+          <p class="card-text">My first website using html ,css ,js and django </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+
+{% endblock body %}

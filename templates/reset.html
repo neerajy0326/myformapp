@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Reset Password {% endblock title %}
+{% block head %}
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<style>
+  #message {
+    margin: 0; 
+    padding: 0; 
+  }
+  body {
+    background-image: url("{% static 'hp1.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+ 
+</style>
+{% endblock head %}
+{% block body %}
+<div class="login-form">
+    <form>
+      <h1>Forgot password</h1>
+      <div class="content">
+        <div class="input-field">
+          <input type="email" placeholder="Email" id="emailInput" autocomplete="nope">
+      <div class="action">
+        <button onclick="return displayMessage()">Submit</button>
+        <button onclick="location.href ='/login_page'" type="button">Back to Login</button>
+         
+      </div>
+      <p id="message" class="my-2"></p>
+    </form>
+    
+  </div>
+  
+  <script>
+    function displayMessage() {
+        var email = document.getElementById("emailInput").value;
+        var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      
+        if (emailRegex.test(email)) {
+          document.getElementById("message").innerHTML = "Reset Link successfully sent";
+        } else {
+          document.getElementById("message").innerHTML = "Please input valid Email address";
+        }
+      return false;
+    }
+  </script>
+
+{% endblock body %}
