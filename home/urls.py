@@ -28,6 +28,7 @@ urlpatterns = [
     path('profile/edit_profile/delete_account/', views.delete_account, name='delete_account'),
     path('profile/user_list/',views.user_list, name='user_list'),
     path('profile/user_list/user_detail/<int:pk>/', views.user_detail, name='user_detail'),
+    path('profile/news_list/',views.news_list, name='news_list')
 
 ]
 

@@ -62,6 +62,8 @@
             <p><strong>Username:</strong> {{ user.username }}</p>
             <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
             <p><strong>Your Posts: </strong>{{ my_blogs_count }}</p>
+            
+          
             <div class="button-container">
             <a href="{% url 'edit_profile' %}">
               <button type="button" class="btn btn-secondary custom-button2">Edit profile</button>
@@ -74,12 +76,23 @@
               <button type="button" class="btn btn-dark custom-button">Logout</button>
             </a>
           </div>
-          <a href="{% url 'blog_list' %}">
-            <button type="button" class="btn btn-primary ">Go to Blogs</button>
-          </a>
-          <a href="{% url 'user_list' %}">
-            <button type="button" class="btn btn-primary">Users</button>
-          </a>
+          <div class="row">
+            <div class="col-md-4 col-sm-12"> 
+                <a href="{% url 'blog_list' %}">
+                    <button type="button" class="btn btn-primary btn-block">Go to Blogs</button>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-12"> 
+                <a href="{% url 'user_list' %}">
+                    <button type="button" class="btn btn-primary btn-block">All Users</button>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-12"> 
+                <a href="{% url 'news_list' %}">
+                    <button type="button" class="btn btn-primary btn-block">Read News</button>
+                </a>
+            </div>
+          </div>
           </div>
         </div>
       </div>

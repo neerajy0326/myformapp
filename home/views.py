@@ -12,11 +12,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost
 from .forms import BlogPostForm,CommentForm
 import os
+import requests
 
 
+def fetch_news():
+    api_key = '7cc367b820224180bd114bc277f10637'
+    url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}'
+    response = requests.get(url)
+    data = response.json()
+    return data['articles']
 
-
-
+def news_list(request):
+    news_articles = fetch_news()
+    return render(request, 'news_list.html', {'news_articles': news_articles})
 
 
 @login_required
