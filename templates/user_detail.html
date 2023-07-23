@@ -41,7 +41,7 @@
             margin-left: -20px; 
           }
           .custom-marker:before {
-            content: ""; 
+            content: "\1F516"; 
             margin-right: 10px; 
           }
 
@@ -86,7 +86,7 @@
                               <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
                           </li>
                       {% empty %}
-                          <li class="blog-list-item custom-marker">No blog posts yet.</li>
+                          <li class="blog-list-item ">No blog posts yet.</li>
                       {% endfor %}
                   </ul>
                 </div>

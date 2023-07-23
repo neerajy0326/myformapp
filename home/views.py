@@ -27,6 +27,8 @@ def news_list(request):
     return render(request, 'news_list.html', {'news_articles': news_articles})
 
 
+
+
 @login_required
 def delete_account(request):
     if request.method == 'POST':
@@ -72,6 +74,9 @@ def login_page(request):
             messages.error(request, 'Invalid email or password.')
     
     return render(request, 'login_page.html')
+
+def account_settings(request):
+    return render(request, 'account_settings.html')
 
 @login_required
 def change_password(request):

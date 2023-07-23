@@ -1,4 +1,7 @@
 
+
+
+
 .profile-card {
     max-width: 400px;
     margin: 0 auto;
@@ -40,6 +43,7 @@
 
   
 .profile-picture-container {
+    border: 4px solid #242020;
     width: 200px; 
     height: 200px; 
     overflow: hidden; 
