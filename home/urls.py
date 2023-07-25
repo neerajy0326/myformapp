@@ -30,7 +30,7 @@ urlpatterns = [
     path('profile/user_list/user_detail/<int:pk>/', views.user_detail, name='user_detail'),
     path('profile/news_list/',views.news_list, name='news_list'),
     path('profile/account_settings/', views.account_settings, name='account_settings'),
-
+    path('profile/blog_list/post/<int:post_pk>/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
 
 if settings.DEBUG:

@@ -3,10 +3,13 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     <title>{{ blog_post.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'style2.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
     <style>
         body {
@@ -46,7 +49,37 @@
                 <p>{{ blog_post.content }}</p>
                 <p>Posted by: {{ blog_post.author }}</p>
                 <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
-  
+                
+                <a id="show-comments-btn" class="text-decoration-none text-dark">
+                    <i class="bi bi-wechat" style="font-size: 32px;"></i>
+                    
+                  </a>
+                <h4 id="comments-heading" style="display: none;">Comments</h4>
+                <ul id="comments-list" style="display: none;">
+                    {% for comment in comments %}
+                        <li>{{ comment.text }} - {{ comment.author.username }}
+                            <span class="pub-date">({{ comment.timestamp|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
+                            {% if request.user == comment.author or request.user == comment.post.author %}
+                            <form action="{% url 'delete_comment' blog_post.pk comment.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete Comment</button>
+                            </form>
+                           {% endif %}
+                        </li> 
+                    {% endfor %}
+                                   </ul>
+
+                           <div  >
+                            <form method="post" id="comments-post" style="display: none;">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="{{ form.text.id_for_label }}">Comment</label>
+                                  <div class="input-group">  
+                                    <input type="text" class="form-control" id="{{ form.text.id_for_label }}" name="{{ form.text.html_name }}">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>   
                         
 
 
@@ -72,7 +105,53 @@
 
 
 
+   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get all the pub-date elements
+        var pubDateElements = document.querySelectorAll(".pub-date");
+    
+        // Loop through each pub-date element and update its content
+        pubDateElements.forEach(function (element) {
+          // Get the raw date value from the element's text content
+          var rawDate = element.textContent.trim();
+    
+          // Parse the raw date using Moment.js
+          var date = moment(rawDate, "MMMM DD, YYYY HH:mm");
+    
+          // Calculate the relative time (e.g., "2 minutes ago")
+          var relativeTime = date.fromNow();
+    
+          // Update the element's text content with the relative time
+          element.textContent = "(" + relativeTime + ")";
+        });
+      });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var showCommentsBtn = document.getElementById("show-comments-btn");
+            var commentsHeading = document.getElementById("comments-heading");
+            var commentsList = document.getElementById("comments-list");
+            var commentsPost = document.getElementById("comments-post")
 
+            showCommentsBtn.addEventListener("click", function () {
+                if (commentsHeading.style.display === "none") {
+                    // Show the comments section
+                    commentsPost.style.display = "block";
+                    commentsHeading.style.display = "block";
+                    commentsList.style.display = "block";
+                   
+                } else {
+                    // Hide the comments section
+                    commentsPost.style.display = "none";
+                    commentsHeading.style.display = "none";
+                    commentsList.style.display = "none";
+                    
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>

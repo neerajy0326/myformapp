@@ -189,6 +189,25 @@ def blog_detail(request, pk):
         form = CommentForm()
 
     return render(request, 'blog_detail.html', {'blog_post': blog_post, 'comments': comments, 'form': form})
+
+
+
+
+def delete_comment(request, post_pk, comment_id):
+    if request.method == 'POST':
+        # Fetch the comment by comment_id
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+        except Comment.DoesNotExist:
+            # Handle the case if the comment doesn't exist
+            # You can redirect or show an error message here
+            pass
+        else:
+            # Check if the current user is the author of the comment or the blog post
+            if request.user == comment.author or request.user == comment.post.author:
+                comment.delete()
+    return redirect('blog_detail', pk=post_pk)
+
 @login_required
 def blog_create(request):
     # Create operation - Save a new blog post to the database
