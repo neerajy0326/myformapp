@@ -68,18 +68,18 @@
                 <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="pic">
                    </div>
                 {% endif %}
-                <p>Username: <strong> {{ user.username }} </strong></p>
-                <p>Full Name: {{ user.full_name }}</p>
+                
+                <p>{{ user.full_name }}</p>
                 
                   
                 {% if user.bio %}
                 <p>{{ user.bio }}</p>
                 {% endif %}
                 
-                <p>{{ user.full_name }}</p>
+                
                          
                   <div>
-                    <h3>Blog Posts: {{ user_blogs_count }}</h3>
+                    <h4>Blog Posts: {{ user_blogs_count }}</h4>
                     <ul>
                       {% for blog in user_blogs %}
                           <li class="blog-list-item custom-marker">
