@@ -55,11 +55,12 @@
               {% endif %}
             {% endfor %}
           {% endif %}
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end ">
             <a href="{% url 'account_settings' %}" class="text-decoration-none text-dark">
               <i class="bi bi-gear" style="font-size: 24px;"></i>
               
           </a>
+
       </div>
           <h2 class="welcome-heading">Welcome, <span class="user-name">{{ user.full_name }}</span></h2>
             <div class="profile-picture-container">

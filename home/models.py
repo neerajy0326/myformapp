@@ -2,7 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.models import User
+from django.db import models
+from django.conf import settings
 
 
 class CustomUserManager(BaseUserManager):
@@ -84,6 +86,12 @@ class BlogPost(models.Model):
           pub_date = models.DateTimeField(auto_now_add=True)
           author = models.CharField(max_length=100) 
           photo = models.ImageField(upload_to='blog_photos/', blank=True, null=True) 
+          likes_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')         
+          
+          @property
+          def like_count(self):
+           return self.likes_users.count()
+          
           def __str__(self):
             return self.title 
 

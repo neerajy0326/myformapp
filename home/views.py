@@ -287,4 +287,12 @@ def user_detail(request, pk):
     return render(request, 'user_detail.html', {'user': user ,'user_blogs_count': user_blogs_count, 'user_blogs': user_blogs}  )
 
 
-
+@login_required
+def like_post(request, pk):
+    blog_post = get_object_or_404(BlogPost, pk=pk)
+    if request.user in blog_post.likes_users.all():
+        blog_post.likes_users.remove(request.user)
+    else:
+        blog_post.likes_users.add(request.user)
+    blog_post.save()
+    return redirect('blog_detail', pk=pk)

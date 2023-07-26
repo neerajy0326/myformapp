@@ -59,6 +59,7 @@
             margin-bottom: 12px; 
         }
         
+        
     </style>
 </head>
 <body>
@@ -73,13 +74,28 @@
                 </div>
                 {% endif %}
                 <p>{{ blog_post.content }}</p>
-                <p>Posted by: {{ blog_post.author }}</p>
-                <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
-                
-                <a id="show-comments-btn" class="text-decoration-none text-dark">
+                <p>
+                    Posted by: {{ blog_post.author }}
+                    <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
+                </p>
+                <a href="{% url 'like_post' blog_post.pk %}" class="text-decoration-none text-dark me-1">
+                    {% if user in blog_post.likes_users.all %}
+                        <i class="bi bi-heart-fill" style="font-size: 32px; color: red;"></i>
+                    {% else %}
+                        <i class="bi bi-heart" style="font-size: 32px;"></i>
+                    {% endif %}
+                </a>
+                <a id="show-liked-users-btn" class="text-decoration-none text-dark">
+                    {{ blog_post.like_count }} Likes
+                </a>
+             
+                <a id="show-comments-btn" class="text-decoration-none text-dark me-1">
                     <i class="bi bi-wechat" style="font-size: 32px;"></i>
                     
-                  </a>
+                </a>
+                <span>{{ comments|length }} Comments</span>
+
+          
                 <h4 id="comments-heading" style="display: none;">Comments</h4>
                 <ul id="comments-list" style="display: none;">
                     {% for comment in comments %}
@@ -108,7 +124,7 @@
                     {% endfor %}
                 </ul>
 
-                           <div  >
+                           <div >
                             <form method="post" id="comments-post" style="display: none;">
                                 {% csrf_token %}
                                 <div class="form-group">
@@ -120,11 +136,23 @@
                             </form>
                         </div>   
                         
+                       
+                        <span id="liked-users-list" style="display: none;">
+                            {% for liked_user in blog_post.likes_users.all %}
+                            <div>
+                                <img src="{% if liked_user.profile_picture %}{{ liked_user.profile_picture.url }}{% else %}{% static 'df.jpeg' %}{% endif %}" class="profile-picture">
+                                <a href="{% url 'user_detail' liked_user.pk %}" class="like-link" style="color: blue;">{{ liked_user.username }}</a>
+                            </div>
+                            {% endfor %}
+                        </span>
 
+                       
 
-
-
-  
+                        <div class="container">
+                            <a href="{% url 'blog_list' %}">
+                            <button type="button" class="btn btn-primary" style="margin-right:20px;">Back to Blog List</button>
+                            </a>
+                           </div>
                {% if request.user.username == blog_post.author %}
                <a href="{% url 'blog_update' blog_post.pk %}">
                 <button type="button" class="btn btn-primary" style="margin-left:12px;">Edit post</button>
@@ -183,6 +211,21 @@
                     commentsHeading.style.display = "none";
                     commentsList.style.display = "none";
                     
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var showLikedUsersBtn = document.getElementById("show-liked-users-btn");
+            var likedUsersList = document.getElementById("liked-users-list");
+    
+            showLikedUsersBtn.addEventListener("click", function () {
+                if (likedUsersList.style.display === "none") {
+                    likedUsersList.style.display = "inline";
+                } else {
+                    likedUsersList.style.display = "none";
                 }
             });
         });
