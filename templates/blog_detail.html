@@ -32,6 +32,33 @@
             object-fit: cover;
             border-radius: 8px;
         }
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .default-profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: lightgray;
+            margin-right: 10px;
+        }
+        .pub-date {
+            font-size: 12px;
+            color: #777;
+        }
+        a {
+            text-decoration: none; 
+            color: #000; 
+        }
+        .comment-container {
+            margin-bottom: 12px; 
+        }
+        
     </style>
 </head>
 <body>
@@ -56,17 +83,30 @@
                 <h4 id="comments-heading" style="display: none;">Comments</h4>
                 <ul id="comments-list" style="display: none;">
                     {% for comment in comments %}
-                        <li>{{ comment.text }} - {{ comment.author.username }}
-                            <span class="pub-date">({{ comment.timestamp|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
-                            {% if request.user == comment.author or request.user == comment.post.author %}
-                            <form action="{% url 'delete_comment' blog_post.pk comment.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Delete Comment</button>
-                            </form>
-                           {% endif %}
+                        <li>
+                            <div class="comment-container">
+                                <div class="commenter-info">
+                                    {% if comment.author.profile_picture %}
+                                        <img src="{{ comment.author.profile_picture.url }}" class="profile-picture">
+                                    {% else %}
+                                        <img src="{% static 'df.jpeg' %}" alt="Default Profile Picture" class="profile-picture">
+                                    {% endif %}
+                                    <a href="{% url 'user_detail' comment.author.pk %}" class="commenter-username" style="color: blue;">{{ comment.author.username }}</a>
+                                </div>
+                                <div class="comment-text">
+                                    {{ comment.text }}
+                                    <span class="pub-date">({{ comment.timestamp|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
+                                    {% if request.user == comment.author or request.user == comment.post.author %}
+                                        <form action="{% url 'delete_comment' blog_post.pk comment.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Delete Comment</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </li> 
                     {% endfor %}
-                                   </ul>
+                </ul>
 
                            <div  >
                             <form method="post" id="comments-post" style="display: none;">
@@ -84,11 +124,7 @@
 
 
 
-               <div class="container">
-                <a href="{% url 'blog_list' %}">
-                <button type="button" class="btn btn-primary" style="margin-right:20px;">Back to Blog List</button>
-                </a>
-               </div>
+  
                {% if request.user.username == blog_post.author %}
                <a href="{% url 'blog_update' blog_post.pk %}">
                 <button type="button" class="btn btn-primary" style="margin-left:12px;">Edit post</button>
