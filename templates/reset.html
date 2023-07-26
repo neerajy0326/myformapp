@@ -21,33 +21,37 @@
 {% endblock head %}
 {% block body %}
 <div class="login-form">
-    <form>
+  <form method="post" action="{% url 'reset' %}">
+      {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          <div class="alert alert-success">
+            {{ message }}
+          </div>
+        {% elif message.tags == 'error' %}
+          <div class="alert alert-danger">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
       <h1>Forgot password</h1>
       <div class="content">
         <div class="input-field">
-          <input type="email" placeholder="Email" id="emailInput" autocomplete="nope">
+          <input type="email" placeholder="Email" id="emailInput" name="email">
       <div class="action">
-        <button onclick="return displayMessage()">Submit</button>
-        <button onclick="location.href ='/login_page'" type="button">Back to Login</button>
+        <button type="submit">Submit</button>
+        <a href="{% url 'login_page' %}">
+          <button type="button" >Back to Login</button>
+         </a>
+        
          
       </div>
-      <p id="message" class="my-2"></p>
+     
     </form>
     
   </div>
   
-  <script>
-    function displayMessage() {
-        var email = document.getElementById("emailInput").value;
-        var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      
-        if (emailRegex.test(email)) {
-          document.getElementById("message").innerHTML = "Reset Link successfully sent";
-        } else {
-          document.getElementById("message").innerHTML = "Please input valid Email address";
-        }
-      return false;
-    }
-  </script>
+
 
 {% endblock body %}

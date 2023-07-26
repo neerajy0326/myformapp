@@ -39,11 +39,17 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # For admin panel login with username
 ]
 
-
+NGROK_URL = 'https://9be6-2401-4900-5f9d-abc3-d00a-aaba-2523-5e51.ngrok-free.app'
 # Use PBKDF2 password hashing algorithm (default)
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'myform.user@gmail.com'
+EMAIL_HOST_PASSWORD = 'olnmfebpvkhxohpn'
 
 
 AUTH_USER_MODEL = 'home.CustomUser' 

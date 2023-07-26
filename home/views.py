@@ -12,8 +12,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost
 from .forms import BlogPostForm,CommentForm
 import os
+from django.contrib.auth.models import User
 import requests
-
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes,force_str
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from django.contrib.auth.forms import SetPasswordForm
 
 def fetch_news():
     api_key = '7cc367b820224180bd114bc277f10637'
@@ -128,9 +137,65 @@ def edit_profile(request):
         form = EditProfileForm(instance=user)
 
     return render(request, 'edit_profile.html', {'form': form})
-
+from django.http import HttpResponse 
 def reset(request):
-    return render(request,"reset.html")
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        print(f"Received email: {email}")
+        try:
+            user = get_user_model().objects.get(email=email)
+        except get_user_model().DoesNotExist:
+            user = None
+
+        if user:
+            # Generate the password reset token
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(str(user.pk))) 
+            
+            ngrok_url = settings.NGROK_URL
+            # Build the reset link
+            
+            reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+            reset_link = f'{ngrok_url}{reset_url}'
+
+            # Send the password reset email
+            subject = 'Password Reset Request'
+            from_email = f'MyForm <{settings.EMAIL_HOST_USER}>'
+            html_message = render_to_string('reset_password_email.html', {
+                'user': user,
+                'reset_link': reset_link,
+            })
+            send_mail(subject,'', from_email, [email] ,html_message=html_message)
+
+            messages.success(request, 'An email has been sent with instructions to reset your password.')
+        else:
+            messages.error(request, 'User with this email address does not exist.')
+
+        return redirect('reset')
+
+    return render(request, 'reset.html')
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your password has been reset. You can now log in with your new password.')
+                return redirect('login_page')
+        else:
+            form = SetPasswordForm(user)
+
+        return render(request, 'password_reset_confirm.html', {'form': form})
+
+    messages.error(request, 'Invalid reset link. Please try again.')
+    return redirect('login_page')
 
 @login_required
 def profile(request):
