@@ -85,7 +85,7 @@ class BlogPost(models.Model):
           content = models.TextField()
           pub_date = models.DateTimeField(auto_now_add=True)
           author = models.CharField(max_length=100) 
-          photo = models.ImageField(upload_to='blog_photos/', blank=True, null=True) 
+          photo = models.ImageField(upload_to='post_photos/', blank=True, null=True) 
           likes_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')         
           
           @property

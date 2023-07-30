@@ -127,6 +127,19 @@ DATABASES = {
         'PORT': '',  
     }
 }
+#my aws bucket storage credentials
+AWS_ACCESS_KEY_ID = 'AKIARYU4KP6QVZ4VU3OD'
+AWS_SECRET_ACCESS_KEY = 'f5bWKqAykrlrJRrP7VdcJIBN5O6/sCQ0gJmS4n9t'
+AWS_STORAGE_BUCKET_NAME = 'myformappbucket'
+AWS_S3_REGION_NAME = 'ap-south-1'  # e.g., 'us-east-1'
+
+# Use AWS S3 for static files.
+#STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/static/'
+#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Use AWS S3 for media files.
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/media/'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # Password validation
