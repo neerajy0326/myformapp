@@ -24,19 +24,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.forms import SetPasswordForm
 
-def fetch_news():
-    api_key = '7cc367b820224180bd114bc277f10637'
-    url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}'
-    response = requests.get(url)
-    data = response.json()
-    return data['articles']
 
-def news_list(request):
-    news_articles = fetch_news()
-    return render(request, 'news_list.html', {'news_articles': news_articles})
-
-
-
+def chat(request):
+    return render(request,"chat.html")
 
 @login_required
 def delete_account(request):
@@ -70,8 +60,7 @@ def login_page(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        print(email)  # Debugging line
-        print(password)  # Debugging line
+        
 
         user = authenticate(request, email=email, password=password)
         print(user)
@@ -141,7 +130,7 @@ from django.http import HttpResponse
 def reset(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        print(f"Received email: {email}")
+        
         try:
             user = get_user_model().objects.get(email=email)
         except get_user_model().DoesNotExist:

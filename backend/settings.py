@@ -39,7 +39,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # For admin panel login with username
 ]
 
-NGROK_URL = 'https://9be6-2401-4900-5f9d-abc3-d00a-aaba-2523-5e51.ngrok-free.app'
+NGROK_URL = 'https://f2b9-2401-4900-5f9d-abc3-d5a6-525e-fe69-40ba.ngrok-free.app'
 # Use PBKDF2 password hashing algorithm (default)
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
@@ -110,10 +110,21 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+#DATABASES = {
+ #   'default': {
+  #      'ENGINE': 'django.db.backends.sqlite3',
+   #     'NAME': BASE_DIR / 'myuser.db',
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'myuser.db',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'myform',
+        'USER': 'neeraj',
+        'PASSWORD': 'Neeraj@26',
+        'HOST': 'localhost',  # Change this if MySQL is hosted elsewhere
+        'PORT': '',  # Use the default port (3306)
     }
 }
 
