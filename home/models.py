@@ -58,7 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'contact_number','username']
 
-    objects = CustomUserManager()  # Use the custom manager for the objects field
+    objects = CustomUserManager()  
 
     groups = models.ManyToManyField(
         'auth.Group',

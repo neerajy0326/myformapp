@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import boto3
+from storages.backends.s3boto3 import S3Boto3Storage
 
 # settings.py
 LOGIN_REDIRECT_URL = 'profile'
@@ -127,6 +129,7 @@ DATABASES = {
         'PORT': '',  
     }
 }
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #my aws bucket storage credentials
 AWS_ACCESS_KEY_ID = 'AKIARYU4KP6QVZ4VU3OD'
 AWS_SECRET_ACCESS_KEY = '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'

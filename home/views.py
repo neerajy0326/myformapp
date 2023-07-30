@@ -304,17 +304,16 @@ def blog_delete(request, pk):
     if blog_post.author == request.user.username:
      if request.method == 'POST':
         if blog_post.photo:
-                # Get the file path of the photo
-                file_path = blog_post.photo.path
+                
+                
 
-                # Delete the photo from the media files
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+               
+              
 
-                # Remove the photo from the database
+                
                 blog_post.photo.delete()
 
-            # Delete the blog post
+           
         blog_post.delete()
 
         return redirect('blog_list')
