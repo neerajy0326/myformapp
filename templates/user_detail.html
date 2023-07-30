@@ -79,14 +79,14 @@
                 
                          
                   <div>
-                    <h4>Blog Posts: {{ user_blogs_count }}</h4>
+                    <h4> {{ user_blogs_count }} Posts</h4>
                     <ul>
                       {% for blog in user_blogs %}
                           <li class="blog-list-item custom-marker">
                               <a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a>
                           </li>
                       {% empty %}
-                          <li class="blog-list-item ">No blog posts yet.</li>
+                          <li class="blog-list-item ">No posts yet.</li>
                       {% endfor %}
                   </ul>
                 </div>
