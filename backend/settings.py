@@ -123,8 +123,8 @@ DATABASES = {
         'NAME': 'myform',
         'USER': 'neeraj',
         'PASSWORD': 'Neeraj@26',
-        'HOST': 'localhost',  # Change this if MySQL is hosted elsewhere
-        'PORT': '',  # Use the default port (3306)
+        'HOST': 'localhost',  
+        'PORT': '',  
     }
 }
 
