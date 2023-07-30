@@ -19,7 +19,7 @@ Make sure you have the following software installed:
 
 1. Clone the repository:
 
-      git clone https://github.com/your-username/my-social-media-platform.git
+      git clone https://github.com/neerajy0326/myformapp
 
 2. python3 manage.py migrate
 3. python3 manage.py runserver
