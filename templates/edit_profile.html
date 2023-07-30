@@ -56,7 +56,7 @@
               <h2>Edit Profile</h2>
                <form method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="{{ form.full_name.id_for_label }}">Full Name:</label>
+                    <label for="{{ form.full_name.id_for_label }}">Full Name</label>
                     <div class="input-group">
                       <input type="text" class="form-control" id="{{ form.full_name.id_for_label }}" name="{{ form.full_name.html_name }}" value="{{ form.full_name.value }}">
                     </div>
@@ -68,7 +68,7 @@
                
                 
                   <div class="form-group">
-                    <label for="{{ form.contact_number.id_for_label }}">Contact Number:</label>
+                    <label for="{{ form.contact_number.id_for_label }}">Contact Number</label>
                     <div class="input-group">
                       <input type="text" class="form-control" id="{{ form.contact_number.id_for_label }}" name="{{ form.contact_number.html_name }}" value="{{ form.contact_number.value }}">
                      
@@ -76,21 +76,21 @@
                   </div>
                 
                   <div class="form-group">
-                    <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth:</label>
+                    <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
                     <div class="input-group">
                       <input type="date" class="form-control" id="{{ form.date_of_birth.id_for_label }}" name="{{ form.date_of_birth.html_name }}" value="{{ form.date_of_birth.value }}">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="{{ form.bio.id_for_label }}">Bio:</label>
+                    <label for="{{ form.bio.id_for_label }}">Bio</label>
                     <div class="input-group">
                       <input type="text" class="form-control" id="{{ form.bio.id_for_label }}" name="{{ form.bio.html_name }}" value="{{ form.bio.value }}">
                     </div>
                   </div>
                 
                   <div class="form-group">
-                    <label for="{{ form.profile_picture.id_for_label }}">Profile Picture:</label>
+                    <label for="{{ form.profile_picture.id_for_label }}">Profile Picture</label>
                     <div class="input-group">
                       <input type="file" class="form-control custom-file-input" id="{{ form.profile_picture.id_for_label }}" name="{{ form.profile_picture.html_name }}">
                       {% if form.profile_picture.value %}
