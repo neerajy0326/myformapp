@@ -1,4 +1,4 @@
-{% load tz %} {% load static %}
+{% load custom_filters %} {% load tz %} {% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,11 +26,18 @@
             border-radius: 10px;
         }
  
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .photo-container {
+            width: 100%; /* fixed width for the container */
+            height: 400px; /* fixed height for the container */
             border-radius: 8px;
+            overflow: hidden; /* video/image stays within the fixed size */
+        }
+        
+        .photo-container video,
+        .photo-container img {
+            width: 100%; /* video/image covers the entire container */
+            height: 100%; /*video/image covers the entire container */
+            object-fit: cover; /* Maintain aspect ratio and fill the container */
         }
         .profile-picture {
             width: 40px;
@@ -68,11 +75,22 @@
           <div class="col-md-6">
             <div class="profile-card">
                 <h1>{{ blog_post.title }}</h1>
-                {% if blog_post.photo %}
                 <div class="photo-container">
-                    <img src="{{ blog_post.photo.url }}">
+                    {% if blog_post.media %}
+                        {% if blog_post.media.url %}
+                            {% if blog_post.media.url|lower|is_video %}
+                                <video autoplay loop>
+                                    <source src="{{ blog_post.media.url }}" type="video/quicktime">
+                                    <source src="{{ blog_post.media.url }}" type="video/mp4">
+                                    <source src="{{ blog_post.media.url }}" type="video/webm">
+                                    
+                                </video>
+                            {% else %}
+                                <img src="{{ blog_post.media.url }}" alt="Blog Post Photo">
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
                 </div>
-                {% endif %}
                 <p>{{ blog_post.content }}</p>
                 <p>
                     Posted by: {{ blog_post.author }}

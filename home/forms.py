@@ -21,7 +21,7 @@ class EditProfileForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), required=False)
     profile_picture = forms.ImageField(widget=forms.ClearableFileInput(attrs={'class': 'form-control custom-file-input'}), required=False)
     bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
-
+    previous_profile_picture_url = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = CustomUser
@@ -30,7 +30,7 @@ class EditProfileForm(forms.ModelForm):
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'content', 'photo']
+        fields = ['title', 'content', 'media']
 
 
 class CommentForm(forms.ModelForm):

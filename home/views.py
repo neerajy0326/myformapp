@@ -98,6 +98,7 @@ from .forms import EditProfileForm
 from .models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 
 @login_required
 def edit_profile(request):
@@ -109,6 +110,11 @@ def edit_profile(request):
             remove_profile_picture = request.POST.get('remove_profile_picture', False)
 
             if remove_profile_picture == 'on':
+                if user.profile_picture:
+                    try:
+                        default_storage.delete(user.profile_picture.name)
+                    except:
+                        pass
                 # Remove the profile picture from the database and clear the profile_picture field
                 user.profile_picture.delete()
                 user.profile_picture = None
@@ -303,7 +309,7 @@ def blog_delete(request, pk):
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if blog_post.author == request.user.username:
      if request.method == 'POST':
-        if blog_post.photo:
+        if blog_post.media:
                 
                 
 
@@ -311,7 +317,7 @@ def blog_delete(request, pk):
               
 
                 
-                blog_post.photo.delete()
+                blog_post.media.delete()
 
            
         blog_post.delete()

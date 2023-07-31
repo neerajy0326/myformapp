@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+import magic
 
 
 class CustomUserManager(BaseUserManager):
@@ -78,14 +80,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
+
+def validate_media_type(value):
+    mime = magic.Magic(mime=True)
+    file_type = mime.from_buffer(value.read())
+    if not file_type.startswith('image/') and not file_type.startswith('video/'):
+        raise ValidationError('Unsupported file type. Only images or videos are allowed.')    
     
 class BlogPost(models.Model):
           title = models.CharField(max_length=100)
           content = models.TextField()
           pub_date = models.DateTimeField(auto_now_add=True)
           author = models.CharField(max_length=100) 
-          photo = models.ImageField(upload_to='post_photos/', blank=True, null=True) 
+          media = models.FileField(upload_to='post_media/', blank=True, null=True, validators=[validate_media_type]) 
           likes_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')         
           
           @property
