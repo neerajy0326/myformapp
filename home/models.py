@@ -100,7 +100,7 @@ class BlogPost(models.Model):
            return self.likes_users.count()
           
           def __str__(self):
-            return self.title 
+            return f"{self.title} - {self.likes_users.count()} like" 
 
 User = get_user_model()
 class Comment(models.Model):
@@ -109,5 +109,6 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-
+    def __str__(self):
+            return f"{self.post.title} - {self.text}"
 

@@ -20,9 +20,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path ,include
 
-admin.site.site_header = "Cybersec - Login"
-admin.site.site_title = "Cybersec Admin Portal"
-admin.site.index_title = "Welcome to Cybersec Admin Portal"
+admin.site.site_header = "MyForm - Login"
+admin.site.site_title = "MyForm Admin Portal"
+admin.site.index_title = "Welcome to MyForm Admin Portal"
 
 
 urlpatterns = [
