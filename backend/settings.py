@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
-
+from decouple import config
 # settings.py
 LOGIN_REDIRECT_URL = 'profile'
 # settings.py
@@ -122,19 +122,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'myform',
-        'USER': 'neeraj',
-        'PASSWORD': 'Neeraj@26',
-        'HOST': 'localhost',  
-        'PORT': '',  
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': '',
     }
 }
+
+
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #my aws bucket storage credentials
-AWS_ACCESS_KEY_ID = 'AKIARYU4KP6QVZ4VU3OD'
-AWS_SECRET_ACCESS_KEY = 'f5bWKqAykrlrJRrP7VdcJIBN5O6/sCQ0gJmS4n9t'
-AWS_STORAGE_BUCKET_NAME = 'myformappbucket'
-AWS_S3_REGION_NAME = 'ap-south-1'  # e.g., 'us-east-1'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME') # e.g., 'us-east-1'
 
 # Use AWS S3 for static files.
 #STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/static/'
