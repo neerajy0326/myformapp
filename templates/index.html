@@ -12,13 +12,32 @@
     background-position: center;
     background-attachment: fixed;
   }
+  .btn-custom {
+    background-color: white !important;
+    color: blue;
+    --bs-btn-padding-y: .25rem;
+    --bs-btn-padding-x: .5rem;
+    --bs-btn-font-size: 1.5rem;
+  }
+  .btn-custom:hover {
+    background-color: white !important;
+    color: blue !important;
+  }
 </style>
 {% endblock head %}
 
 {% block body %}
 
-  
-
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+  <div class="btn-group horizontal">
+    <button type="button" class="btn btn-primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1.5rem;">
+      Login
+    </button>
+    <button type="button" class="btn btn-custom">
+      Sign Up
+    </button>
+  </div>
+</div>
   
 
 
