@@ -42,7 +42,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 NGROK_URL = 'https://f2b9-2401-4900-5f9d-abc3-d5a6-525e-fe69-40ba.ngrok-free.app'
+
 # Use PBKDF2 password hashing algorithm (default)
+
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
@@ -54,8 +56,7 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
-AUTH_USER_MODEL = 'home.CustomUser' 
-
+AUTH_USER_MODEL = 'home.CustomUser'
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
 
