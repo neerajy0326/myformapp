@@ -41,7 +41,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # For admin panel login with username
 ]
 
-NGROK_URL = 'https://f2b9-2401-4900-5f9d-abc3-d5a6-525e-fe69-40ba.ngrok-free.app'
+NGROK_URL = 'https://6535-2401-4900-594d-ab50-58df-6003-bb7d-38fe.ngrok-free.app'
 
 # Use PBKDF2 password hashing algorithm (default)
 
