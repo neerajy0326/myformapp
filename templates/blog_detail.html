@@ -31,14 +31,19 @@
             height: 400px; /* fixed height for the container */
             border-radius: 8px;
             overflow: hidden; /* video/image stays within the fixed size */
+            position: relative;
         }
         
         .photo-container video,
         .photo-container img {
-            width: 100%; /* video/image covers the entire container */
-            height: 100%; /*video/image covers the entire container */
-            object-fit: cover; /* Maintain aspect ratio and fill the container */
-        }
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+}
         .profile-picture {
             width: 40px;
             height: 40px;
@@ -65,6 +70,13 @@
         .comment-container {
             margin-bottom: 12px; 
         }
+        .profile-picture-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            
+            overflow: hidden;
+        }
         
         
     </style>
@@ -72,25 +84,22 @@
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
-          <div class="col-md-6">
+          
             <div class="profile-card">
                 <h1>{{ blog_post.title }}</h1>
-                <div class="photo-container">
-                    {% if blog_post.media %}
-                        {% if blog_post.media.url %}
+                {% if blog_post.media and blog_post.media.url %}
+                        <div class="photo-container" id="photo-container">
                             {% if blog_post.media.url|lower|is_video %}
                                 <video autoplay loop>
                                     <source src="{{ blog_post.media.url }}" type="video/quicktime">
                                     <source src="{{ blog_post.media.url }}" type="video/mp4">
                                     <source src="{{ blog_post.media.url }}" type="video/webm">
-                                    
                                 </video>
                             {% else %}
-                                <img src="{{ blog_post.media.url }}" alt="Blog Post Photo">
+                                <img src="{{ blog_post.media.url }}" alt="Blog Post Photo" id="zoom-image">
                             {% endif %}
-                        {% endif %}
+                        </div>
                     {% endif %}
-                </div>
                 <p>{{ blog_post.content }}</p>
                 <p>
                     Posted by: {{ blog_post.author }}
@@ -166,11 +175,7 @@
 
                        
 
-                        <div class="container">
-                            <a href="{% url 'blog_list' %}">
-                            <button type="button" class="btn btn-primary" style="margin-right:20px;">Back to Blog List</button>
-                            </a>
-                           </div>
+                        
                {% if request.user.username == blog_post.author %}
                <a href="{% url 'blog_update' blog_post.pk %}">
                 <button type="button" class="btn btn-primary" style="margin-left:12px;">Edit post</button>
@@ -182,6 +187,29 @@
             </div>
         </div>
       </div>
+      <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid d-flex align-items-center">
+          
+            <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
+           
+            <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'profile' %}">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+              {% else %}
+              
+              <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">
+              {% endif %}
+          </a>
+        </div>
+    </nav>
+    <style>
+        .profile-card {
+          padding-bottom: 80px; /* Adjust the value as needed */
+        }
+      </style>
     </div>
 
 

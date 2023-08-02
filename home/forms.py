@@ -6,7 +6,7 @@ class UserRegistrationForm(forms.ModelForm):
    
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    contact_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    contact_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}),required=False)
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = CustomUser

@@ -27,6 +27,13 @@
         padding: 20px; 
         border-radius: 10px;
     }
+    .profile-picture-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        
+        overflow: hidden;
+    }
 </style>   
 <body>
 {% if user.is_authenticated %}
@@ -62,6 +69,15 @@
 
         </div>
     </div>
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid">
+          
+            <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'profile' %}"><i class="bi bi-person" style="font-size:24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+        </div>
+    </nav>
   </div>
   {% else %}
 <p>User is not authenticated.</p>

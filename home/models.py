@@ -7,6 +7,7 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 import magic
+from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -55,12 +56,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     bio = models.CharField(max_length=200, blank=True, null=True)
-
+    date_joined = models.DateTimeField(default=timezone.now)
+    
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'contact_number','username']
 
     objects = CustomUserManager()  
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Check if it's a new user
+            self.date_joined = timezone.now()
+        super().save(*args, **kwargs)
 
     groups = models.ManyToManyField(
         'auth.Group',

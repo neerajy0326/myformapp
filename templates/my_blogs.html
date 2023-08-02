@@ -6,6 +6,7 @@
     <title>My Blogs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'style2.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 
     <style>
@@ -30,6 +31,14 @@
     background-color: #f9f9f9; 
     padding: 20px; 
     border-radius: 10px;
+    max-width: 100%;
+    
+}
+
+@media (max-width: 575.98px) {
+  .profile-card {
+      padding-bottom: 80px;
+  }
 }
 .custom-marker {
     list-style-type: none; 
@@ -39,6 +48,14 @@
     content: "\1F516"; 
     margin-right: 10px; 
   }
+
+  .profile-picture-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    
+    overflow: hidden;
+}
 
 </style>
 </head>
@@ -58,18 +75,14 @@
         {% endfor %}
       {% endif %}
         <div class="row justify-content-center">
-          <div class="col-md-6">
+          
             <div class="profile-card blog-list-profile-card">
                 <div class="header-container">
                    
                   <h1>My Posts</h1>
                   <p>You have {{ my_blogs_count }} {% if my_blogs_count == 1 %}post{% else %}posts{% endif %}</p>
-                   <a href="{% url 'blog_create' %}">
-                    <button type="button" class="btn btn-primary">Create Post</button>
-                   </a>
-                   <a href="{% url 'profile' %}">
-                    <button type="button" class="btn btn-secondary">Profile</button>
-                   </a>
+                   
+                  
                    
                 </div>
               
@@ -88,6 +101,29 @@
             </div>
         </div>
       </div>
+      <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid d-flex align-items-center">
+          
+            <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
+           
+            <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'profile' %}">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+              {% else %}
+              
+              <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">
+              {% endif %}
+          </a>
+        </div>
+    </nav>
+    <style>
+      .profile-card {
+        padding-bottom: 80px;
+      }
+
       
     </div> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

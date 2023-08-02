@@ -3,13 +3,14 @@
 
 
 .profile-card {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #bfbdbd;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  }
+  /* Remove or modify the max-width property */
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #bfbdbd;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
   .profile-card h2 {
     font-weight: 700;
     

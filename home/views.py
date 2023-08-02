@@ -67,7 +67,7 @@ def login_page(request):
         print(user)
         if user is not None:
             login(request, user)
-            return redirect('/profile')
+            return redirect('/blog_list')
         
         else:
             messages.error(request, 'Invalid email or password.')
@@ -127,7 +127,7 @@ def edit_profile(request):
                 
             return redirect('profile')  # Redirect to the profile page after profile edit
         else:
-            messages.error(request, 'Username already exists ! Choose different ')
+            messages.error(request, 'Contact number is required before saving')
 
     else:
         form = EditProfileForm(instance=user)
@@ -220,7 +220,7 @@ def register(request):
             return redirect('login_page')
         else:
             
-            return HttpResponse("Form is invalid.")
+            messages.error(request, 'Username not available. Choose different one!')
     else:
         form = UserRegistrationForm()
 
