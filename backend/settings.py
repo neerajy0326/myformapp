@@ -15,6 +15,8 @@ import os
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
 from decouple import config
+
+
 # settings.py
 LOGIN_REDIRECT_URL = 'profile'
 # settings.py
