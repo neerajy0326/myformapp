@@ -31,13 +31,14 @@ body {
   
   overflow: hidden;
 }
+
 </style>
 
 </head>
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
-          <div class="col-md-6">
+          
             <div class="profile-card">
                 {% if messages %}
                 {% for message in messages %}
@@ -58,14 +59,14 @@ body {
                         <div class="form-group">
                             <label for="{{ form.title.id_for_label }}">Title</label>
                             <div class="input-group">
-                              <input type="text" class="form-control" id="{{ form.title.id_for_label }}" name="{{ form.title.html_name }}">
+                              <input type="text" class="form-control" id="{{ form.title.id_for_label }}" name="{{ form.title.html_name }}" value="{{ form.title.value|default_if_none:"" }}">
                             </div>
                           </div>
                         
                           <div class="form-group">
                             <label for="{{ form.content.id_for_label }}">Content</label>
                             <div class="input-group">
-                              <textarea class="form-control" id="{{ form.content.id_for_label }}" name="{{ form.content.html_name }}" row="3"></textarea>
+                              <textarea class="form-control" id="{{ form.content.id_for_label }}" name="{{ form.content.html_name }}" row="3" value="{{ form.content.value }}">{{ form.content.value|default_if_none:"" }}</textarea>
                             </div>
                           </div>
 
@@ -74,6 +75,9 @@ body {
                             <div class="photo-container">
                             <div class="input-group">
                                 <input type="file" class="form-control" id="{{ form.media.id_for_label }}" name="{{ form.media.html_name }}">
+                                {% if form.media.value %}
+                                <img src="{{ form.media.value.url }}" alt="Post photo" style="max-width: 20px;">
+                                 {% endif %}
                               </div>
                             </div>
 

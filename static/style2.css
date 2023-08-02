@@ -1,5 +1,7 @@
 
-
+.navbar {
+  border-top: 1px solid #ccc;
+}
 
 
 .profile-card {

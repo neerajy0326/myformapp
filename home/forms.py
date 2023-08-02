@@ -32,7 +32,16 @@ class BlogPostForm(forms.ModelForm):
         model = BlogPost
         fields = ['title', 'content', 'media']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        content = cleaned_data.get('content')
+        media = cleaned_data.get('media')
 
+        if not content and not media:
+            raise forms.ValidationError("Please choose at least one option between Content and Photo.")
+        
+        return cleaned_data
+    
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

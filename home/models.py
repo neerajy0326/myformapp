@@ -96,7 +96,7 @@ def validate_media_type(value):
     
 class BlogPost(models.Model):
           title = models.CharField(max_length=100)
-          content = models.TextField()
+          content = models.TextField( blank=True , null=True)
           pub_date = models.DateTimeField(auto_now_add=True)
           author = models.CharField(max_length=100) 
           media = models.FileField(upload_to='post_media/', blank=True, null=True, validators=[validate_media_type]) 

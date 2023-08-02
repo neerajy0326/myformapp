@@ -110,7 +110,7 @@
         
         overflow: hidden;
     }
- 
+
 
 
 </style>    
@@ -159,8 +159,9 @@
                       {% for blog_post in blog_posts %}
                         <li class="blog-list-item custom-marker" style="margin-bottom: 10px;">
                             <a href="{% url 'blog_detail' blog_post.pk %}">{{ blog_post.title }}</a>
-                            <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
                             <span class="author-name">by {{ blog_post.author }}</span>
+                            <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
+                            
                         </li>
                       {% endfor %}
                     </ul>
