@@ -65,7 +65,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()  
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Check if it's a new user
+        if not self.pk:  
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
 
