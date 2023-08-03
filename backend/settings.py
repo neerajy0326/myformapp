@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from decouple import config
 from pathlib import Path
 import os
 import boto3
 from storages.backends.s3boto3 import S3Boto3Storage
-from decouple import config
+
 
 
 # settings.py
