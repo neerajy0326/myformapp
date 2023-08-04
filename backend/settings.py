@@ -35,7 +35,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-k3rfh1*uh*x**^@l-21=2)1r287!9spsp)hksb&k28e%z$eh0i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = [
@@ -76,7 +76,6 @@ INSTALLED_APPS = [
     'backend',
     
     
-    
 ]
 
 MIDDLEWARE = [
@@ -85,7 +84,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',   
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
 ]
 
@@ -182,11 +181,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = '/home/ubuntu/webapp/myformapp/static/'
+
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = [
- #  os.path.join(BASE_DIR,"static")
-#]
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR,"static")
+]
 
 
 
