@@ -148,11 +148,11 @@ def reset(request):
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(str(user.pk))) 
             
-            url = '43.205.114.56'
+            ngrok_url = settings.NGROK_URL
             # Build the reset link
             
             reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-            reset_link = f'{url}{reset_url}'
+            reset_link = f'{ngrok_url}{reset_url}'
 
             # Send the password reset email
             subject = 'Password Reset Request'
