@@ -310,16 +310,8 @@ def blog_delete(request, pk):
     if blog_post.author == request.user.username:
      if request.method == 'POST':
         if blog_post.media:
-                
-                
-
-               
-              
-
-                
-                blog_post.media.delete()
-
-           
+                 blog_post.media.delete()
+      
         blog_post.delete()
 
         return redirect('blog_list')
