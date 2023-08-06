@@ -141,7 +141,7 @@
                                     <span class="pub-date">({{ comment.timestamp|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
                                     {% if request.user == comment.author or request.user == comment.post.author %}
                                         <form action="{% url 'delete_comment' blog_post.pk comment.id %}" method="post">
-                                            {% csrf_token %}
+                                            
                                             <button type="submit" class="btn btn-danger">Delete Comment</button>
                                         </form>
                                     {% endif %}
@@ -154,7 +154,6 @@
                            <div >
                             <form method="post" id="comments-post" style="display: none;">
                                 
-                                {% csrf_token %}
                                 <div class="form-group">
                                     <label for="{{ form.text.id_for_label }}">Comment</label>
                                   <div class="input-group">  

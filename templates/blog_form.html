@@ -55,7 +55,7 @@ body {
               {% endif %}
                 <h1>{% if form.instance.pk %}Edit Post{% else %}Create New Post{% endif %}</h1>
                      <form method="post" enctype="multipart/form-data">
-                      {% csrf_token %}
+                      
                       
                         <div class="form-group">
                             <label for="{{ form.title.id_for_label }}">Title</label>

@@ -44,7 +44,7 @@
                 <h1>Confirm Deletion</h1>
                 <p>Are you sure you want to delete "{{ blog_post.title }}"?</p>
                 <form method="post">
-                    {% csrf_token %}
+                    
                    
                     <button type="submit" class='btn btn-danger'>Delete</button>
                     <a href="{% url 'blog_detail' blog_post.pk %}">

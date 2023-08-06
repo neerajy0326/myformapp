@@ -19,7 +19,7 @@
                <h1>Delete Account</h1>
                  <p>Are you sure you want to delete your account? This action cannot be undone.</p>
                  <form method="post">
-                  {% csrf_token %}
+                  
                   
                     <button type="submit" class="btn btn-danger">Delete Account</button>
                     <a href="{% url 'edit_profile' %}">
