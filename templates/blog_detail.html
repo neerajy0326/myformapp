@@ -153,6 +153,7 @@
 
                            <div >
                             <form method="post" id="comments-post" style="display: none;">
+                                
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="{{ form.text.id_for_label }}">Comment</label>

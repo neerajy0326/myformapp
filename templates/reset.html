@@ -22,6 +22,7 @@
 {% block body %}
 <div class="login-form">
   <form method="post" action="{% url 'reset' %}">
+    {% csrf_token %}
       {% if messages %}
       {% for message in messages %}
         {% if message.tags == 'success' %}

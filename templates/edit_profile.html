@@ -64,6 +64,7 @@
             </div>
               <h2>Edit Profile</h2>
                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="{{ form.full_name.id_for_label }}">Full Name</label>
                     <div class="input-group">
