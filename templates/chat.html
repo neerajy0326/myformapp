@@ -66,6 +66,14 @@
         background-color: red;
         margin-left: 5px;
     }
+    .orange-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: orange;
+        margin-left: 5px;
+      }
       
   
       .active-status {
@@ -94,29 +102,32 @@
           <div class="card-body contacts_body">
             <ul class="contacts-list">
                 {% for user in users %}
-                {% if user != request.user %}
-                <li class="contacts-list-item">
-                    <div class="user-info">
+                    {% if user != request.user %}
+                    <li class="blog-list-item custom-marker" style="margin-bottom: 10px; display: flex; align-items: center;">
+                      <div class="user-info">
                         {% if user.profile_picture %}
                         <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="user-profile-pic">
                         {% else %}
                         <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
                         {% endif %}
                         <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
-                        {% if user.show_active_status %}
+                       {% if user.show_active_status %}
                         {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
                             <span class="green-dot"></span>
                         {% endif %}
                         {% if user.last_active is  None %}
                             <span class="red-dot"></span>
+                         
                         {% endif %}
+                        {% if user.last_active is not None and user.last_active|format_last_active != "active now" %}
+                            <span class="orange-dot"></span>
                         {% endif %}
+                       {% endif %}
                     </div>
-                    
                     <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
-                </li>
-                {% endif %}
-                {% endfor %}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
             </ul>
         </div>
 					<div class="card-footer"></div>

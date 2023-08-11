@@ -28,7 +28,7 @@ from datetime import timedelta
 
 
 
-
+@login_required
 def chat(request):
     if request.user.is_authenticated:
            if request.user.show_active_status:
