@@ -54,15 +54,23 @@ def logout_view(request):
     return redirect('login_page')
 
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('blog_list') 
     return render(request,"index.html")
 
 def about(request):
+    if request.user.is_authenticated:
+        return redirect('blog_list') 
     return render(request,"about.html")
 
 def services(request):
+    if request.user.is_authenticated:
+        return redirect('blog_list') 
     return render(request,"services.html")
 
 def contact(request):
+    if request.user.is_authenticated:
+        return redirect('blog_list') 
     return render(request,"contact.html")  
 
 def login_page(request): 
@@ -218,6 +226,8 @@ def profile(request):
     return render(request, 'profile.html', {'my_blogs_count': my_blogs_count})
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('blog_list') 
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
