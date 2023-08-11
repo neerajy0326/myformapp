@@ -148,8 +148,7 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 from django.http import HttpResponse 
 def reset(request):
-    request.user.last_active = timezone.now()
-    request.user.save()
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         
