@@ -65,7 +65,9 @@ def services(request):
 def contact(request):
     return render(request,"contact.html")  
 
-def login_page(request):  
+def login_page(request): 
+    if request.user.is_authenticated:
+        return redirect('blog_list')   
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
