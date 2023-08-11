@@ -42,10 +42,9 @@ AUTHENTICATION_BACKENDS = [
     
     'django.contrib.auth.backends.ModelBackend',  # For admin panel login with username
 ]
-
 NGROK_URL = 'https://myform.tech'
 
-# Use PBKDF2 password hashing algorithm (default)
+
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
