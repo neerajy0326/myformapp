@@ -12,7 +12,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost
 from .forms import BlogPostForm,CommentForm
 import os
-
+from django.utils import timezone
 from django.contrib.auth.models import User
 import requests
 from django.contrib.auth.tokens import default_token_generator
@@ -24,10 +24,18 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.forms import SetPasswordForm
+from datetime import timedelta
+
+
 
 
 def chat(request):
-    return render(request,"chat.html")
+    if request.user.is_authenticated:
+           if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
+    users = CustomUser.objects.exclude(pk=request.user.pk)  # Exclude the logged-in user from the list
+    return render(request, "chat.html", {'users': users})
 
 @login_required
 def delete_account(request):
@@ -79,6 +87,9 @@ def account_settings(request):
 
 @login_required
 def change_password(request):
+    if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -102,6 +113,8 @@ from django.core.files.storage import default_storage
 
 @login_required
 def edit_profile(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     user = request.user
 
     if request.method == 'POST':
@@ -135,6 +148,8 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 from django.http import HttpResponse 
 def reset(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     if request.method == 'POST':
         email = request.POST.get('email')
         
@@ -195,6 +210,9 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def profile(request):
+    if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
     user = request.user.username
     my_blogs_count = BlogPost.objects.filter(author=user).count()
     return render(request, 'profile.html', {'my_blogs_count': my_blogs_count})
@@ -229,12 +247,15 @@ def register(request):
 
 @login_required
 def blog_list(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     # Read operation - Fetch all blog posts from the database
     blog_posts = BlogPost.objects.all().order_by('-pub_date')
     return render(request, 'blog_list.html', {'blog_posts': blog_posts})
 @login_required
 def blog_detail(request, pk):
-    
+    request.user.last_active = timezone.now()
+    request.user.save()
     blog_post = get_object_or_404(BlogPost, pk=pk)
     comments = blog_post.comments.all()  # Get all comments associated with the post
 
@@ -255,6 +276,8 @@ def blog_detail(request, pk):
 
 
 def delete_comment(request, post_pk, comment_id):
+    request.user.last_active = timezone.now()
+    request.user.save()
     if request.method == 'POST':
         # Fetch the comment by comment_id
         try:
@@ -271,6 +294,8 @@ def delete_comment(request, post_pk, comment_id):
 
 @login_required
 def blog_create(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     # Create operation - Save a new blog post to the database
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES)
@@ -290,6 +315,8 @@ def blog_create(request):
 
 @login_required
 def blog_update(request, pk):
+    request.user.last_active = timezone.now()
+    request.user.save()
     # Update operation - Update an existing blog post in the database
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if request.method == 'POST':
@@ -305,6 +332,8 @@ def blog_update(request, pk):
 
 @login_required
 def blog_delete(request, pk):
+    request.user.last_active = timezone.now()
+    request.user.save()
     # Delete operation - Delete a blog post from the database
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if blog_post.author == request.user.username:
@@ -320,6 +349,9 @@ def blog_delete(request, pk):
 
 @login_required
 def my_blogs(request):
+    if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
     current_user = request.user.username  
     my_blogs = BlogPost.objects.filter(author=current_user).order_by('-pub_date')
     my_blogs_count = my_blogs.count()
@@ -328,10 +360,17 @@ def my_blogs(request):
 
 @login_required
 def user_list(request):
+    
+    if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
     users = CustomUser.objects.all()
+
     return render(request, 'user_list.html', {'users': users})
 
 def user_detail(request, pk):
+    request.user.last_active = timezone.now()
+    request.user.save()
     user = get_object_or_404(CustomUser, pk=pk)
     user_blogs_count = BlogPost.objects.filter(author=user.username).count()
     user_blogs = BlogPost.objects.filter(author=user.username).order_by('-pub_date')
@@ -341,6 +380,8 @@ def user_detail(request, pk):
 
 @login_required
 def like_post(request, pk):
+    request.user.last_active = timezone.now()
+    request.user.save()
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if request.user in blog_post.likes_users.all():
         blog_post.likes_users.remove(request.user)

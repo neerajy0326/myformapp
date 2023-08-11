@@ -108,6 +108,10 @@
                       {% endif %}
                     </div>
                   </div>
+                  <div class="active-status-toggle">
+                    <label for="show-active-status">Show Active Status:</label>
+                    <input type="checkbox" id="show-active-status" name="show_active_status" {% if user.show_active_status %}checked{% endif %}>
+                </div>
                   
                 <label for="remove_profile_picture">Remove Profile Picture</label>
               <input type="checkbox" name="remove_profile_picture" id="remove_profile_picture">

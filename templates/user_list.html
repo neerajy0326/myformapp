@@ -1,4 +1,4 @@
-{% load tz %} {% load static %}
+{% load tz %} {% load static %}{% load custom_filters %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,15 +36,49 @@
   .user-profile-pic {
     width: 50px;
     height: 50px;
-    border-radius: 50%; 
-    margin-right: 10px; 
-   
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+}
 
-a {
-    text-decoration: none; 
-    color: #000; 
+.user-info a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.green-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: green;
+    margin-left: 5px;
+}
+.red-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  margin-left: 5px;
+}
+.orange-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: orange;
+  margin-left: 5px;
+}
+
+.active-status {
+    margin-left: auto;
 }
 
 .follow-button {
@@ -70,6 +104,7 @@ a {
         
         overflow: hidden;
     }
+ 
 
 
 </style> 
@@ -90,19 +125,35 @@ a {
         
                 <div class="container mt-5">
 
-                    <ul>
-                        {% for user in users %}
-                        <li class="blog-list-item custom-marker" style="margin-bottom: 10px;">
-                            {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="user-profile-pic">
-                            {% else %}
-                            <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
-                            {% endif %}
-                            <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
-                           
-                        </li>
-                        {% endfor %}
-                    </ul>
+                  <ul class="user-list">
+                    {% for user in users %}
+                    {% if user != request.user %}
+                    <li class="blog-list-item custom-marker" style="margin-bottom: 10px; display: flex; align-items: center;">
+                      <div class="user-info">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="user-profile-pic">
+                        {% else %}
+                        <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
+                        {% endif %}
+                        <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
+                       {% if user.show_active_status %}
+                        {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
+                            <span class="green-dot"></span>
+                        {% endif %}
+                        {% if user.last_active is  None %}
+                            <span class="red-dot"></span>
+                         
+                        {% endif %}
+                        {% if user.last_active is not None and user.last_active|format_last_active != "active now" %}
+                            <span class="orange-dot"></span>
+                        {% endif %}
+                       {% endif %}
+                    </div>
+                    <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
             </div>
         </div>

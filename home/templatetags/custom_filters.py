@@ -1,5 +1,6 @@
 from django import template
 from django.utils import timezone
+from datetime import timedelta
 register = template.Library()
 
 @register.filter(name='is_video')
@@ -13,3 +14,25 @@ def localtime(value, timezone_name='Asia/Kolkata'):
         return timezone.localtime(value, timezone_name)
     else:
         return timezone.localtime(value)
+    
+
+@register.filter(name='format_last_active')
+def format_last_active(last_active):
+    now = timezone.now()
+
+    if last_active is None:
+        return "inactive"
+
+    elapsed_time = now - last_active
+
+    if elapsed_time < timedelta(minutes=1):
+        return "active now"
+    elif elapsed_time < timedelta(hours=1):
+        minutes = int(elapsed_time.total_seconds() // 60)
+        return f"active {minutes} mins ago"
+    elif elapsed_time < timedelta(days=1):
+        hours = int(elapsed_time.total_seconds() // 3600)
+        return f"active {hours} hours ago"
+    else:
+        days = elapsed_time.days
+        return f"active {days} days ago"    

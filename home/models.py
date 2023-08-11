@@ -57,6 +57,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     bio = models.CharField(max_length=200, blank=True, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    show_active_status = models.BooleanField(default=True)
+    last_active = models.DateTimeField(blank=True, null=True)
     
     
     USERNAME_FIELD = 'email'
@@ -87,6 +89,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def update_last_active(self):
+        self.last_active = timezone.now()
+        self.save()
 
 def validate_media_type(value):
     mime = magic.Magic(mime=True)

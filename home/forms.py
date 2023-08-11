@@ -25,7 +25,7 @@ class EditProfileForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['full_name', 'contact_number', 'date_of_birth', 'profile_picture' ,'bio']
+        fields = ['full_name', 'contact_number', 'date_of_birth', 'profile_picture' ,'bio','show_active_status']
 
 class BlogPostForm(forms.ModelForm):
     class Meta:
