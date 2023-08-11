@@ -25,8 +25,13 @@ def format_last_active(last_active):
 
     elapsed_time = now - last_active
 
-    if elapsed_time < timedelta(minutes=1):
+    if elapsed_time < timedelta(seconds=10):
         return "active now"
+    elif elapsed_time < timedelta(seconds=20):
+        return "active just now"
+    elif elapsed_time < timedelta(minutes=1):
+        seconds = elapsed_time.seconds
+        return f"active {seconds} seconds ago"
     elif elapsed_time < timedelta(hours=1):
         minutes = int(elapsed_time.total_seconds() // 60)
         return f"active {minutes} mins ago"
