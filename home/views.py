@@ -148,7 +148,6 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 from django.http import HttpResponse 
 def reset(request):
-    
     if request.method == 'POST':
         email = request.POST.get('email')
         

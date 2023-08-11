@@ -1,4 +1,4 @@
-{% load tz %} {% load static %}
+{% load tz %} {% load static %} {% load custom_filters %}
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,6 +58,30 @@
           overflow: hidden;
       }
         
+      .green-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: green;
+        margin-left: 5px;
+    }
+    .red-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: red;
+      margin-left: 5px;
+    }
+    .orange-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: orange;
+      margin-left: 5px;
+    }
         
         </style>
 </head>
@@ -86,7 +110,10 @@
                 
                 
                 <p>Joined on {{  user.date_joined|timezone:"Asia/Kolkata"|date:'F d, Y ' }}</p>
-                
+                <div>
+               
+                       <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
+                </div>
                   <div>
                     <h4> {{ user_blogs_count }} Posts</h4>
                     <ul>
@@ -115,8 +142,8 @@
          
           <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'profile' %}">
-            {% if user.profile_picture %}
-                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+            {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
             {% else %}
             
             <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">
