@@ -121,7 +121,6 @@
             dotColor = 'orange';
         }
     
-            // Construct the chat header with user's profile picture, name, and active status
             const chatHeader = `
                 <div class="chat-header">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" onclick="openUserDetail('${user_name}','${profile_pic_url}','${user_date_joined}')">
@@ -134,16 +133,18 @@
                     </div>
                 </div>
                 <hr>
+                <div class="chat-body">
+                   
+                   
+                </div>
             `;
     
-            // You can use AJAX to load the chat content for the selected user
-            // For simplicity, let's just change the content of the chat box here
+            
             chatBox.innerHTML = chatHeader;
         }
         function openUserDetail(user_name ,profile_pic_url ,user_date_joined) {
             const userDetailContent = document.getElementById('userDetailContent');
-            // You can use AJAX to load the user detail content here
-            // For simplicity, let's just set some content
+  
             userDetailContent.innerHTML = `           
              <div class="user-detail">
                 <img src="${profile_pic_url}" alt="${user_name}'s photo" class="user-profile-modal" style="width: 250px; height: 250px;" >
@@ -211,7 +212,7 @@
 				<div class="col-md-8 col-xl-6 chat h-100 mt-4">
 					<div class="card">
                         <div class="card-body chat-box">
-
+                        
                         </div>
                         
                         <div class="card-footer">

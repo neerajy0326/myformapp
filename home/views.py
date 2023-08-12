@@ -25,7 +25,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.forms import SetPasswordForm
 from datetime import timedelta
-
+from .models import VerificationPlan, VerificationBadge
 
 
 @login_required
@@ -399,3 +399,24 @@ def like_post(request, pk):
         blog_post.likes_users.add(request.user)
     blog_post.save()
     return redirect('blog_detail', pk=pk)
+
+
+def badge_selection(request):
+    plans = VerificationPlan.objects.all()
+    return render(request, 'badge_selection.html', {'plans': plans})
+
+def payment(request, plan_id):
+    plan = VerificationPlan.objects.get(pk=plan_id)
+    if request.method == 'POST':
+        if request.user.balance >= plan.price:
+            expiration_date = timezone.now() + timedelta(days=plan.duration_days)
+            request.user.balance -= plan.price
+            request.user.verified_badge = True
+            request.user.verification_expiration = expiration_date
+            request.user.save()
+            VerificationBadge.objects.create(user=request.user, plan=plan, verified=True)
+            messages.success(request, 'Payment successful. You are now verified!')
+            return redirect('profile')  # Redirect to the user's profile
+        else:
+            messages.error(request, 'Insufficient wallet balance.')
+    return render(request, 'payment.html', {'plan': plan})

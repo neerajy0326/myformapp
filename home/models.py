@@ -51,6 +51,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=10)
     email = models.EmailField(unique=True)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     is_staff = models.BooleanField(default=False)  # Add the is_staff attribute
     is_superuser = models.BooleanField(default=False)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -59,6 +60,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     show_active_status = models.BooleanField(default=True)
     last_active = models.DateTimeField(blank=True, null=True)
+    verified_badge = models.BooleanField(default=False)
+    verification_expiration = models.DateTimeField(null=True, blank=True)
+      
     
     
     USERNAME_FIELD = 'email'
@@ -70,6 +74,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if not self.pk:  
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
+
+     
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -100,6 +106,8 @@ def validate_media_type(value):
     if not file_type.startswith('image/') and not file_type.startswith('video/'):
         raise ValidationError('Unsupported file type. Only images or videos are allowed.')    
     
+ 
+    
 class BlogPost(models.Model):
           title = models.CharField(max_length=100)
           content = models.TextField( blank=True , null=True)
@@ -114,6 +122,8 @@ class BlogPost(models.Model):
           
           def __str__(self):
             return f"{self.title} - {self.likes_users.count()} like" 
+          
+        
 
 User = get_user_model()
 class Comment(models.Model):
@@ -125,3 +135,20 @@ class Comment(models.Model):
     def __str__(self):
             return f"{self.post.title} - {self.text}"
 
+class VerificationPlan(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration_days = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
+
+class VerificationBadge(models.Model):
+    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='verification_badge')
+    plan = models.ForeignKey(VerificationPlan, on_delete=models.CASCADE)
+    verified = models.BooleanField(default=False)
+    verification_expiration = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

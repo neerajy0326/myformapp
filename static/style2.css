@@ -44,15 +44,7 @@
     border-radius: 12px;
   }
 
-  
-.profile-picture-container {
-    border: 4px solid #ffffff;
-    width: 200px; 
-    height: 200px; 
-    overflow: hidden; 
-    border-radius: 8%; 
-    margin: 0 auto; 
-  }
+
   
   .profile-picture-container img {
     width: 100%; 

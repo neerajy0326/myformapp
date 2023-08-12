@@ -33,6 +33,8 @@ urlpatterns = [
     path('profile/account_settings/', views.account_settings, name='account_settings'),
     path('blog_list/post/<int:post_pk>/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
     path('reset/<str:uidb64>/<str:token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    path('profile/badge_selection/', views.badge_selection, name='badge_selection'),
+    path('profile/payment/<int:plan_id>/', views.payment, name='payment'),
     
 ]
 

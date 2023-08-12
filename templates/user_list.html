@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="{% static 'style2.css' %}">
 
@@ -104,6 +104,10 @@
         
         overflow: hidden;
     }
+  
+    .blue-fill-icon {
+      color: #007fff;
+    }
  
 
 
@@ -136,6 +140,9 @@
                         <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
                         {% endif %}
                         <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
+                        {% if user.verified_badge %}
+                        <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
+                        {% endif %}
                        {% if user.show_active_status %}
                         {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
                             <span class="green-dot"></span>
@@ -149,7 +156,7 @@
                         {% endif %}
                        {% endif %}
                     </div>
-                    <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
+                    
                     </li>
                     {% endif %}
                     {% endfor %}
@@ -179,6 +186,11 @@
       </div>
   </nav>
 </div>
+<style>
+  .profile-card {
+    padding-bottom: 80px; 
+  }
+</style>
 
 
 
