@@ -1,4 +1,4 @@
-{% load tz %}{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,17 +42,6 @@
             
             overflow: hidden;
         }
-        .sent {
-            color: red;
-        }
-        
-        .received {
-            color: green;
-        }
-        .transaction-datetime {
-            color: gray;
-            font-size: 12px;
-        }
         </style>
 
 </head>
@@ -75,59 +64,33 @@
             <div class="col-md-6">
                 <div class="profile-card blog-list-profile-card">
                     <div class="header-container row align-items-center">
-                        <h1 class="col-md-9">Wallet detail</h1>
+                        <h1 class="col-md-9">Add Funds to Your Wallet</h1>
                     </div>
-                    <div>
-                        <p>Your wallet balance:</p>
-                        <h2>₹{{ user.balance }}</h2>
-                    </div>
-                    <div class="mx-2"> 
-                        <a href="{% url 'add_funds' %}">
-                            <button type="button" class="btn btn-success ">Add money</button>
-                        </a>
-                        <a href="{% url 'transfer_money' %}">
-                            <button type="button" class="btn btn-primary ">Transfer Money</button>
-                        </a>
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
                         <div class="mb-3">
-                            
-                            {% if user.pin %}
-                            <a href="{% url 'change_pin' %}" class="btn btn-primary">Change PIN</a>
-                            {% else %}
-                                <a href="{% url 'setup_pin' %}" class="btn btn-primary">Set PIN</a>
-                            {% endif %}
+                            <label for="amount" class="form-label">Amount:</label>
+                            <input type="number" name="amount" step="0.01" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid amount.
+                            </div>
                         </div>
-                    </div>
-                    {% if transactions %}
-                    <h3>Recent Transactions:</h3>
-                    <ul>
-                        {% for transaction in transactions %}
-                        <li class="{% if transaction.sender == user %}sent{% else %}received{% endif %}">
-                            {% if transaction.description == 'Payment for Verification Badge' %}
-                              {{ transaction.description }} of ₹{{ transaction.amount }}
-                             {% else %}
-                             {% if transaction.sender == user %}
-                                 Sent - ₹{{ transaction.amount }} to {{ transaction.receiver.username }}
-                             {% else %}
-                                 Received + ₹{{ transaction.amount }} from {{ transaction.sender.username }}
-                             {% endif %}
-                         {% endif %}
-                         <span class="transaction-datetime">{{ transaction.timestamp|timezone:"Asia/Kolkata"|date:'F d, Y' }} at {{ transaction.timestamp|timezone:"Asia/Kolkata"|time:"g:i A" }}</span>
-
-                        </li>
-                    {% endfor %}
-
-                    </ul>
-                {% endif %}
+                        <div class="mx-2"> 
+                            <button type="submit" class="btn btn-success mt-3">Add money</button>
+                           
+                                <a href="{% url 'wallet_detail' %}" class="btn btn-dark">
+                                     Cancel
+                                  </a>
+                            </div>
+                    </form>
                     
-                        
-                    
+
                     {% if error_message %}
-    <p>{{ error_message }}</p>
-{% endif %}
+                     <p style="color: red;">{{ error_message }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        
     </div>
     <nav class="navbar fixed-bottom navbar-light bg-light">
         <div class="container-fluid d-flex align-items-center">

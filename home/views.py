@@ -584,7 +584,50 @@ def setup_pin(request):
     return render(request, 'pin_setup.html', {'form': form})
 
 
+
+
+def add_funds(request):
+    if request.method == 'POST':
+        amount = Decimal(request.POST.get('amount'))
+        
+        if amount > 0:
+            user = request.user
+            user.balance += amount
+            user.save()
+            messages.success(request, f'Successfully added Rs {amount} to your wallet.')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Enter a valid amount.')
+    return render(request, 'add_funds.html')
+
+
+
+
+
+def change_pin(request):
+    if request.method == 'POST':
+        current_pin = request.POST.get('current_pin')
+        new_pin = request.POST.get('new_pin')
+        confirm_new_pin = request.POST.get('confirm_new_pin')
+        user = request.user
+
+        if user.pin == current_pin:
+            if new_pin == confirm_new_pin:
+                user.pin = new_pin
+                user.save()
+                messages.success(request, 'PIN changed successfully.')
+                return redirect('profile')
+            else:
+                messages.error(request, 'New PINs do not match.')
+        else:
+            messages.error(request, 'Incorrect current PIN.')
+    return render(request, 'change_pin.html')
+
+
+
+
+
+
 def under_construction(request):
     return render(request,'uc.html')
-
 
