@@ -568,3 +568,7 @@ def setup_pin(request):
         form = PinSetupForm()
 
     return render(request, 'pin_setup.html', {'form': form})
+
+
+def under_construction(request):
+    return render(request,'uc.html')
