@@ -112,7 +112,7 @@ def change_password(request):
             messages.success(request, 'Your password has been successfully updated.')
             return redirect('profile')  # Redirect to the profile page after password change
         else:
-            messages.error(request, 'Please correct the error(s) below.')
+            messages.error(request, 'Please use strong password')
 
     else:
         form = PasswordChangeForm(request.user)
@@ -407,6 +407,8 @@ def like_post(request, pk):
 
 
 def badge_selection(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     plans = VerificationPlan.objects.all()
     return render(request, 'badge_selection.html', {'plans': plans})
 
@@ -468,6 +470,8 @@ def send_verification_success_email(user ,plan):
 
 @login_required
 def cancel_verification(request):
+  request.user.last_active = timezone.now()
+  request.user.save()
   if request.method == 'POST':  
      if request.user.is_authenticated:
          user = request.user
@@ -502,6 +506,8 @@ def send_badgecancel_email(user):
 
    
 def transfer_money(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     user = request.user
     
     if not user.pin:
@@ -542,6 +548,8 @@ def transfer_money(request):
 
 
 def wallet_detail(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     user = request.user
     transactions = WalletTransaction.objects.filter(Q(sender=user) | Q(receiver=user)).order_by('-timestamp')[:10]
     
@@ -554,6 +562,8 @@ def wallet_detail(request):
 
 
 def setup_pin(request):
+    request.user.last_active = timezone.now()
+    request.user.save()
     if request.method == 'POST':
         form = PinSetupForm(request.POST)
         if form.is_valid():
