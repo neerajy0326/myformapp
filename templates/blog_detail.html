@@ -81,6 +81,9 @@
             
             overflow: hidden;
         }
+        .blue-fill-icon {
+            color: #007fff;
+          }
         
         
     </style>
@@ -138,7 +141,9 @@
                                     {% else %}
                                         <img src="{% static 'df.jpeg' %}" alt="Default Profile Picture" class="profile-picture">
                                     {% endif %}
-                                    <a href="{% url 'user_detail' comment.author.pk %}" class="commenter-username" style="color: blue;">{{ comment.author.username }}</a>
+                                    <a href="{% url 'user_detail' comment.author.pk %}" class="commenter-username" style="color: blue;">{{ comment.author.username }} {% if user.verified_badge %}
+                                        <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
+                                        {% endif %}</a>
                                 </div>
                                 <div class="comment-text">
                                     {{ comment.text }}
@@ -172,7 +177,9 @@
                             {% for liked_user in blog_post.likes_users.all %}
                             <div>
                                 <img src="{% if liked_user.profile_picture %}{{ liked_user.profile_picture.url }}{% else %}{% static 'df.jpeg' %}{% endif %}" class="profile-picture">
-                                <a href="{% url 'user_detail' liked_user.pk %}" class="like-link" style="color: blue;">{{ liked_user.username }}</a>
+                                <a href="{% url 'user_detail' liked_user.pk %}" class="like-link" style="color: blue;">{{ liked_user.username }}{% if user.verified_badge %}
+                                    <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
+                                    {% endif %} </a>
                             </div>
                             {% endfor %}
                         </span>
@@ -236,7 +243,7 @@
           // Calculate the relative time (e.g., "2 minutes ago")
           var relativeTime = date.fromNow();
     
-          // Update the element's text content with the relative time
+         
           element.textContent = "(" + relativeTime + ")";
         });
       });

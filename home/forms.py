@@ -46,3 +46,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+
+
+class PinSetupForm(forms.Form):
+    pin = forms.CharField(max_length=4, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    confirm_pin = forms.CharField(max_length=4, widget=forms.PasswordInput(attrs={'class': 'form-control'}))

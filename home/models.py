@@ -62,6 +62,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_active = models.DateTimeField(blank=True, null=True)
     verified_badge = models.BooleanField(default=False)
     verification_expiration = models.DateTimeField(null=True, blank=True)
+    pin = models.CharField(max_length=4, blank=True)
       
     
     
@@ -74,7 +75,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if not self.pk:  
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
-
+    
+    def has_pin(self):
+       return self.pin is not None
      
 
     groups = models.ManyToManyField(
@@ -158,4 +161,6 @@ class WalletTransaction(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_transactions', on_delete=models.CASCADE)
     receiver = models.ForeignKey(CustomUser, related_name='received_transactions', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
+    description = models.CharField(max_length=200 , default='Regular Transaction')
+    

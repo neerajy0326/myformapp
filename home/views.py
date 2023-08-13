@@ -4,6 +4,7 @@ from django.contrib.auth.views import LogoutView
 from .forms import EditProfileForm
 from .forms import UserRegistrationForm 
 from .models import CustomUser,Comment
+from .forms import PinSetupForm
 from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -409,20 +410,37 @@ def badge_selection(request):
 
 def payment(request, plan_id):
     plan = VerificationPlan.objects.get(pk=plan_id)
+
     if request.method == 'POST':
-        if request.user.balance >= plan.price:
-            expiration_date = timezone.now() + timedelta(days=plan.duration_days)
-            request.user.balance -= plan.price
-            request.user.verified_badge = True
-            request.user.verification_expiration = expiration_date
-            request.user.save()
-            VerificationBadge.objects.create(user=request.user, plan=plan, verified=True)
-            send_verification_success_email(request.user ,plan)
-            messages.success(request, 'Payment successful. You are now verified!')
-            return redirect('profile')  # Redirect to the user's profile
+        pin = request.POST.get('pin')  # Get the PIN from the form
+        user = request.user
+
+        # Verify PIN
+        if user.pin == pin:
+            if user.balance >= plan.price:
+                expiration_date = timezone.now() + timedelta(days=plan.duration_days)
+                request.user.balance -= plan.price
+                request.user.verified_badge = True
+                request.user.verification_expiration = expiration_date
+                request.user.save()
+
+                WalletTransaction.objects.create(
+                sender=request.user,
+                receiver=request.user,  # Self-receiver for payment
+                amount=plan.price,
+                description=f'Payment for Verification Badge'
+                )
+                VerificationBadge.objects.create(user=user, plan=plan, verified=True)
+                send_verification_success_email(user, plan)
+                messages.success(request, 'Payment successful. You are now verified!')
+                return redirect('profile')  
+            else:
+                messages.error(request, 'Insufficient wallet balance.')
         else:
-            messages.error(request, 'Insufficient wallet balance.')
+            messages.error(request, 'Incorrect PIN. Payment not processed.')
+
     return render(request, 'payment.html', {'plan': plan})
+
 def send_verification_success_email(user ,plan):
     subject = 'Verification Badge Success'
     
@@ -481,23 +499,30 @@ def transfer_money(request):
         sender = request.user
         receiver_username = request.POST.get('receiver_username')
         amount = Decimal(request.POST.get('amount'))
+        entered_pin = request.POST.get('pin')
 
         try:
             receiver = CustomUser.objects.get(username=receiver_username)
         except CustomUser.DoesNotExist:
-            return render(request, 'transfer_money.html', {'error_message': 'Receiver not found.'})
+            return render(request, 'transfer_money.html', {'error_message': 'No user with this username'})
+        
+        if sender == receiver:
+            return render(request, 'transfer_money.html', {'error_message': 'You cannot send money to yourself.'})
+        
+        if sender.pin == entered_pin:
+          if sender.balance >= amount:
+             sender.balance -= amount
+             receiver.balance += amount
+             sender.save()
+             receiver.save()
 
-        if sender.balance >= amount:
-            sender.balance -= amount
-            receiver.balance += amount
-            sender.save()
-            receiver.save()
+             WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount,timestamp=timezone.now())
 
-            WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount)
-
-            return redirect('profile')
+             return redirect('profile')
+          else:
+              return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
         else:
-            return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
+            return render(request, 'transfer_money.html', {'error_message': 'Incorrect PIN.'})  
 
     return render(request, 'transfer_money.html')  
 
@@ -512,3 +537,24 @@ def wallet_detail(request):
     }
     
     return render(request, 'wallet_detail.html', context)
+
+
+def setup_pin(request):
+    if request.method == 'POST':
+        form = PinSetupForm(request.POST)
+        if form.is_valid():
+            pin = form.cleaned_data['pin']
+            confirm_pin = form.cleaned_data['confirm_pin']
+            if pin == confirm_pin:
+                
+                request.user.pin = pin
+                request.user.save()
+                messages.success(request, 'PIN set successfully.')
+                return redirect('wallet_detail')
+            else:
+                return render(request, 'pin_setup.html', {'error_message': 'PIN does not match!'})
+
+    else:
+        form = PinSetupForm()
+
+    return render(request, 'pin_setup.html', {'form': form})

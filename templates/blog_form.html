@@ -19,10 +19,13 @@ body {
 
 .profile-card {
   border: 2px solid #ccc; 
-  background-color: #f9f9f9; 
   padding: 20px; 
   border-radius: 10px;
-  max-width: 100%;
+  {% if user.verified_badge %}
+  background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+  {% else %}
+  background-color: #f9f9f9; 
+  {% endif%}   
 }
 .profile-picture-icon {
   width: 28px;

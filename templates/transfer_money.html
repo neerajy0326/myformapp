@@ -68,11 +68,14 @@
                     </div>
                     <form method="post" class="form-group">
                         {% csrf_token %}
-                        <label for="receiver_username">Receiver Username:</label>
+                        <label for="receiver_username">Username</label>
                         <input type="text" name="receiver_username" class="form-control">
                         <br>
-                        <label for="amount">Amount:</label>
+                        <label for="amount">Amount</label>
                         <input type="number" name="amount" step="0.01" class="form-control">
+                        <br>
+                        <label for="pin">PIN:</label>
+                        <input type="password" name="pin" class="form-control">
                         <br>
                         <div class="mx-2"> 
                         <button type="submit" class="btn btn-success mt-3">Transfer</button>
@@ -85,7 +88,7 @@
                     
 
                     {% if error_message %}
-    <p>{{ error_message }}</p>
+    <p style="color: red;">{{ error_message }}</p>
 {% endif %}
                 </div>
             </div>

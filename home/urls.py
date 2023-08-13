@@ -38,6 +38,7 @@ urlpatterns = [
     path('profile/transfer_money/', views.transfer_money, name='transfer_money'),
     path('profile/account_settings/cancel_verification', views.cancel_verification, name='cancel_verification'),
     path('profile/wallet_detail/', views.wallet_detail, name='wallet_detail'),
+    path('profile/setup_pin/', views.setup_pin, name='setup_pin'),
     
 ]
 

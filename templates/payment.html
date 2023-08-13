@@ -60,6 +60,10 @@
         <p>Pay using Wallet</p>
         <p>Wallet Balance : ₹{{ user.balance }}</p>
         <form method="post">
+            <div class="mb-3">
+                <label for="pin" class="form-label">PIN</label>
+                <input type="password" name="pin" class="form-control" required>
+            </div>
          <button type="submit"
                 class="submit-now-btn">
             Pay now
