@@ -29,6 +29,8 @@ from django.contrib.auth.forms import SetPasswordForm
 from datetime import timedelta
 from .models import VerificationPlan, VerificationBadge
 from decimal import Decimal
+from django.http import JsonResponse
+import time
 
 
 @login_required
@@ -518,22 +520,24 @@ def transfer_money(request):
         
         if sender == receiver:
             return render(request, 'transfer_money.html', {'error_message': 'You cannot send money to yourself.'})
-        
-        if sender.pin == entered_pin:
-          if sender.balance >= amount:
-             sender.balance -= amount
-             receiver.balance += amount
-             sender.save()
-             receiver.save()
+        if amount > 0:
+            
+         if sender.pin == entered_pin:
+           if sender.balance >= amount:
+              sender.balance -= amount
+              receiver.balance += amount
+              sender.save()
+              receiver.save()
 
-             WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount,timestamp=timezone.now())
+              WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount,timestamp=timezone.now())
 
-             return redirect('profile')
-          else:
-              return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
+              return redirect('profile')
+           else:
+               return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
+         else:
+              return render(request, 'transfer_money.html', {'error_message': 'Incorrect PIN.'})  
         else:
-            return render(request, 'transfer_money.html', {'error_message': 'Incorrect PIN.'})  
-
+             return render(request, 'transfer_money.html', {'error_message': 'Enter an valid amount'})
     return render(request, 'transfer_money.html')  
 
 
@@ -572,3 +576,5 @@ def setup_pin(request):
 
 def under_construction(request):
     return render(request,'uc.html')
+
+

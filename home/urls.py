@@ -40,6 +40,7 @@ urlpatterns = [
     path('profile/wallet_detail/', views.wallet_detail, name='wallet_detail'),
     path('profile/setup_pin/', views.setup_pin, name='setup_pin'),
     path('profile/under_construction', views.under_construction, name='under_construction'),
+    
   
     
 ]
