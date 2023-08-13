@@ -106,6 +106,9 @@
         font-weight: bold;
         margin-left: 10px;
     }
+    .blue-fill-icon {
+        color: #007fff;
+      }
   
       </style>
       <script>
@@ -189,18 +192,10 @@
                         <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
                         {% endif %}
                         <a>{{ user.username }}</a>
-                       {% if user.show_active_status %}
-                        {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
-                            <span class="green-dot"></span>
+                        {% if user.verified_badge %}
+                         <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
                         {% endif %}
-                        {% if user.last_active is  None %}
-                            <span class="red-dot"></span>
-                         
-                        {% endif %}
-                        {% if user.last_active is not None and user.last_active|format_last_active != "active now" %}
-                            <span class="orange-dot"></span>
-                        {% endif %}
-                       {% endif %}
+                      
                     </div>
                     <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
                     </li>

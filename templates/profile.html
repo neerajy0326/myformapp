@@ -82,6 +82,15 @@
   color: #007fff;
 }
 
+.user-detail {
+  display: flex;
+  align-items: center;
+}
+.custom-modal-dialog{
+  max-width: 350px;
+  width: 350px;
+  height: 320px;
+}
   </style>
   <script>
     function openUserDetail(badge_date ) {
@@ -98,6 +107,19 @@
       </div>
       `;
   }
+
+  function openDetail(profile_pic_url) {
+    const userContent = document.getElementById('userContent');
+
+    userContent.innerHTML = `           
+     <div class="user-detail">
+       
+      <img src="${profile_pic_url}" alt="no photo" class="user-profile-modal" style="width: 320px; height: 300px;" >
+      
+        
+    </div>
+    `;
+}
 </script>
 </head>
 
@@ -143,11 +165,14 @@
             </div>
         </div>
             <div class="profile-picture-container">
+              <a onclick="openDetail('{% if not user.profile_picture %}{% static 'df.jpeg' %}{% else %}{{ user.profile_picture.url }}{% endif %}')"  data-bs-toggle="modal" data-bs-target="#userModal">
               {% if user.profile_picture %}
+              
                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture">
               {% else %}
                 <img src="{% static 'df.jpeg' %}" alt="Default Profile Picture">
               {% endif %}
+              </a>
             </div>
               {% if user.bio %}
               <p>{{ user.bio }}</p>
@@ -218,6 +243,20 @@
           <div class="modal-body">
            
               <div id="userDetailContent"></div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog custom-modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="userModalLabel"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+           
+              <div id="userContent"></div>
           </div>
       </div>
   </div>
