@@ -109,6 +109,14 @@
     .blue-fill-icon {
         color: #007fff;
       }
+      .card-body {
+       
+        {% if user.verified_badge %}
+        background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+        {% else %}
+        background-color: #f9f9f9; 
+        {% endif%}   
+    }
   
       </style>
       <script>
@@ -131,6 +139,7 @@
                     <div class="user-info">
                         <img src="${profile_pic_url}" alt="${user_name}'s photo" class="user-profile-pic" >
                         <a>${user_name}</a>
+                      
                         
                         <span class="${dotColor}-dot"></span>
                         <span class="active-status">${user_status}</span>
