@@ -43,17 +43,18 @@
           <div class="col-md-6">
             <div class="profile-card">
   
-               <h1>Delete Account</h1>
-                 <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+               <h1>Cancel Verified Badge</h1>
+                 <p>Are you sure you want to cancel your Verified Badge? This action cannot be undone.</p>
+
                  <form method="post">
                   
                   
-                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                    <button type="submit" class="btn btn-danger">Cancel verification</button>
                     <a href="{% url 'account_settings' %}">
-                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <button type="button" class="btn btn-secondary">Changed my mind</button>
                        </a>
                  </form>
-                
+                <h4><strong>Note:</strong> No refund will be provided for cancellation </h4>
             </div>
           </div>
         </div>

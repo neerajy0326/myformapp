@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verification Badge Success</title>
+</head>
+<body>
+    <h3>Hello <strong>{{ user.full_name }},</strong></h3>
+    
+    <p>Congratulations! Your payment for the verification badge was successful. You are now a verified user.</p>
+    <hr>
+    <h4><strong>Plan details</strong></h4>
+    <p>You have chosen the <strong> {{ plan.name }} </strong> worth <strong> Rs {{ plan.price }} </strong></p>
+    <p>Your Verified Badge will expire on {{ user.verification_expiration|date:"F j, Y" }}</p>
+    <hr>
+    <h4>Remaining Wallet balance <strong>Rs {{ user.balance}}</strong></h4>
+    <hr>
+    <p>Thank you for choosing our service.</p>
+
+    <p>If you need any support or have any questions, please feel free to contact our support team at:</p>
+    <p><a href="mailto:support@myform.tech">support@myform.tech</a></p>
+    
+    <p>Best regards,<br>The MyForm Team</p>
+    <a href="https://myform.tech">www.myform.tech</a>
+</body>
+</html>

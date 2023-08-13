@@ -23,9 +23,13 @@
     
       .profile-card {
         border: 2px solid #ccc; 
-        background-color: #f9f9f9; 
         padding: 20px; 
         border-radius: 10px;
+        {% if user.verified_badge %}
+        background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+        {% else %}
+        background-color: #f9f9f9; 
+        {% endif%}   
     }
     .profile-picture-icon {
         width: 28px;
@@ -43,39 +47,62 @@
         <div class="profile-card">
 
            <h2>Account settings</h2>
-            <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex flex-wrap justify-content-between mb-3">
             
                 
                 <div class="mx-2"> 
                     <a href="{% url 'change_password' %}">
-                        <button type="button" class="btn btn-primary btn-block">Change Password</button>
+                        <button type="button" class="btn btn-primary ">Change Password</button>
                     </a>
                 </div>
                 
                 <div class="mx-2"> 
                     <a href="{% url 'delete_account' %}">
-                        <button type="button" class="btn btn-danger btn-block">Delete Account</button>
+                        <button type="button" class="btn btn-danger ">Delete Account</button>
                     </a>
                 </div>
+                {% if user.verified_badge %}
+                <div class="mx-2"> 
+                    <a href="{% url 'cancel_verification' %}" class="btn btn-danger">
+                         Cancel Verification Badge
+                      </a>
+                </div>
+                {% else %}
+                <div class="mx-2"> 
+                    <a href="{% url 'badge_selection' %}" class="btn btn-primary"><i class="bi bi-patch-check-fill " style="margin-right: 3px;"> </i>Get Verified Badge</a>
+                </div>
+                {% endif%}
+                
                 <div class="mx-2"> 
                     <a href="{% url 'logout' %}" class="btn btn-dark">
                         <i class="bi bi-box-arrow-right"></i> Sign Out
                       </a>
                 </div>
 
+
                 
                   
             </div>
+            
         
         </div>
     </div>
     <nav class="navbar fixed-bottom navbar-light bg-light">
-        <div class="container-fluid">
+        <div class="container-fluid d-flex align-items-center">
           
             <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
             <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
-            <a class="navbar-brand" href="{% url 'profile' %}"><i class="bi bi-person" style="font-size:24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
+           
             <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+            <a class="navbar-brand" href="{% url 'profile' %}">
+              {% if user.profile_picture %}
+                  <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+              {% else %}
+              
+              <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">
+              {% endif %}
+          </a>
         </div>
     </nav>
   </div>

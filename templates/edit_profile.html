@@ -20,14 +20,16 @@
     background-position: center;
     background-attachment: fixed;
   }
-
   .profile-card {
     border: 2px solid #ccc; 
-    background-color: #f9f9f9; 
     padding: 20px; 
     border-radius: 10px;
-    max-width: 100%;
-} 
+    {% if user.verified_badge %}
+    background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+    {% else %}
+    background-color: #f9f9f9; 
+    {% endif%}   
+}
 
 .profile-picture-icon {
   width: 28px;
@@ -121,8 +123,11 @@
                 <button type="submit" class="btn btn-success">
                   <i class="bi bi-check2-circle"></i> Save Changes
                 </button>
+                {% if not user.verified_badge %}
+                <a href="{% url 'badge_selection' %}" class="btn btn-primary"><i class="bi bi-patch-check-fill " style="margin-right: 3px;"> </i>Get Verified Badge</a>
+                {% endif%}
               </div>
-             
+
     </form>
 
       

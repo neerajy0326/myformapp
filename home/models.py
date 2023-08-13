@@ -152,3 +152,10 @@ class VerificationBadge(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class WalletTransaction(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_transactions', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(CustomUser, related_name='received_transactions', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)

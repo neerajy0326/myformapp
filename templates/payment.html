@@ -1,8 +1,4 @@
-
-
 {% load static %}
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +8,15 @@
     <title>{{ plan.name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
-    
+    <link rel="stylesheet" href="{% static 'style4.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'bp.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+          }
+        </style>
 
 </head>
 <body>
@@ -30,18 +33,47 @@
   {% endif %}
 {% endfor %}
 {% endif %}
-<h3>Payment for {{ plan.name }}</h3>
-<p>Price: ₹{{ plan.price }}</p>
-<form method="post">
-  
-  
-  <button type="submit" class="btn btn-success">Pay</button>
-  
-  <a href="{% url 'profile'  %}">
-    <button type="button" class="btn btn-secondary ">Cancel</button>
- </a>
-</form>
- 
+<div class="container">
+    <div class="main-content">
+        <p class="text">MyForm Verified Badge</p>
+    </div>
+
+    <div class="centre-content">
+        <h1 class="price">₹{{ plan.price }}</h1>
+        <p class="course">
+            {{ plan.name }}
+        </p>
+    </div>
+
+    <div class="last-content">
+        <button type="button"
+                class="pay-now-btn">
+            Apply Coupons
+        </button>
+      
+
+    
+    </div>
+
+    <div class="card-details">
+          
+        <p>Pay using Wallet</p>
+        <p>Wallet Balance : ₹{{ user.balance }}</p>
+        <form method="post">
+         <button type="submit"
+                class="submit-now-btn">
+            Pay now
+         </button>
+         <a href="{% url 'profile'  %}">
+            <button type="button" class="cancel-now-btn">Cancel</button>
+         </a>
+        </form> 
+    </div>
+</div>
    
 </body>
 </html>
+
+
+
+ 

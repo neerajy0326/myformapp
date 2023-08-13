@@ -9,9 +9,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import BlogPost
+from .models import BlogPost ,WalletTransaction
 from .forms import BlogPostForm,CommentForm
 import os
+from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth.models import User
 import requests
@@ -26,6 +27,7 @@ from django.urls import reverse
 from django.contrib.auth.forms import SetPasswordForm
 from datetime import timedelta
 from .models import VerificationPlan, VerificationBadge
+from decimal import Decimal
 
 
 @login_required
@@ -415,8 +417,98 @@ def payment(request, plan_id):
             request.user.verification_expiration = expiration_date
             request.user.save()
             VerificationBadge.objects.create(user=request.user, plan=plan, verified=True)
+            send_verification_success_email(request.user ,plan)
             messages.success(request, 'Payment successful. You are now verified!')
             return redirect('profile')  # Redirect to the user's profile
         else:
             messages.error(request, 'Insufficient wallet balance.')
     return render(request, 'payment.html', {'plan': plan})
+def send_verification_success_email(user ,plan):
+    subject = 'Verification Badge Success'
+    
+    html_message = render_to_string('verification_success_email.html',  {'user': user, 'plan': plan})
+
+    from_email = f'MyForm <{settings.EMAIL_HOST_USER}>'
+
+    send_mail(
+        subject,
+        '', 
+        from_email,
+        [user.email],
+        
+        html_message=html_message,
+    )
+
+
+
+@login_required
+def cancel_verification(request):
+  if request.method == 'POST':  
+     if request.user.is_authenticated:
+         user = request.user
+         user.verified_badge = False
+         user.save()
+
+         try:
+             verification_badge = VerificationBadge.objects.get(user=user)
+             verification_badge.delete()  
+         except VerificationBadge.DoesNotExist:
+             pass  
+     send_badgecancel_email(request.user)
+     return redirect('profile')
+  
+  return render(request, 'cancel_verification.html')
+
+def send_badgecancel_email(user):
+    subject = 'Verification Badge Cancelled'
+    
+    html_message = render_to_string('badgecancel_email.html',  {'user': user})
+
+    from_email = f'MyForm <{settings.EMAIL_HOST_USER}>'
+
+    send_mail(
+        subject,
+        '', 
+        from_email,
+        [user.email],
+        
+        html_message=html_message,
+    )
+
+   
+def transfer_money(request):
+    if request.method == 'POST':
+        sender = request.user
+        receiver_username = request.POST.get('receiver_username')
+        amount = Decimal(request.POST.get('amount'))
+
+        try:
+            receiver = CustomUser.objects.get(username=receiver_username)
+        except CustomUser.DoesNotExist:
+            return render(request, 'transfer_money.html', {'error_message': 'Receiver not found.'})
+
+        if sender.balance >= amount:
+            sender.balance -= amount
+            receiver.balance += amount
+            sender.save()
+            receiver.save()
+
+            WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount)
+
+            return redirect('profile')
+        else:
+            return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
+
+    return render(request, 'transfer_money.html')  
+
+
+def wallet_detail(request):
+    user = request.user
+    transactions = WalletTransaction.objects.filter(Q(sender=user) | Q(receiver=user)).order_by('-timestamp')[:10]
+    
+    context = {
+        'user': user,
+        'transactions': transactions,
+    }
+    
+    return render(request, 'wallet_detail.html', context)
