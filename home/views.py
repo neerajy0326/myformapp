@@ -530,7 +530,7 @@ def transfer_money(request):
               receiver.save()
 
               WalletTransaction.objects.create(sender=sender, receiver=receiver, amount=amount,timestamp=timezone.now())
-
+              messages.success(request, f'Successfully transferred Rs {amount} to {receiver.username}.')
               return redirect('profile')
            else:
                return render(request, 'transfer_money.html', {'error_message': 'Insufficient balance.'})
