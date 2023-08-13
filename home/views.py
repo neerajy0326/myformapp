@@ -409,6 +409,11 @@ def badge_selection(request):
     return render(request, 'badge_selection.html', {'plans': plans})
 
 def payment(request, plan_id):
+    user = request.user
+    
+    if not user.pin:
+        messages.warning(request, 'Please set up a PIN first.')
+        return redirect('setup_pin')
     plan = VerificationPlan.objects.get(pk=plan_id)
 
     if request.method == 'POST':
@@ -495,6 +500,11 @@ def send_badgecancel_email(user):
 
    
 def transfer_money(request):
+    user = request.user
+    
+    if not user.pin:
+        messages.warning(request, 'Please set up a PIN first.')
+        return redirect('setup_pin')
     if request.method == 'POST':
         sender = request.user
         receiver_username = request.POST.get('receiver_username')
