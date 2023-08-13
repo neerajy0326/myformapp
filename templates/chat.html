@@ -113,10 +113,16 @@
        
         {% if user.verified_badge %}
         background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+        border-radius: 10px;
         {% else %}
         background-color: #f9f9f9; 
         {% endif%}   
     }
+    .custom-modal-dialog{
+        max-width: 350px;
+        width: 350px;
+        height: 320px;
+      }
   
       </style>
       <script>
@@ -266,7 +272,7 @@
     }
   </style>
   <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog custom-modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="userDetailModalLabel">User Details</h5>
