@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <div id="game-board">
+            <table>
+              <tr>
+                <td>{{ gameState.board.0.0 }}</td>
+                <td>{{ gameState.board.0.1 }}</td>
+                <td>{{ gameState.board.0.2 }}</td>
+              </tr>
+              <tr>
+                <td>{{ gameState.board.1.0 }}</td>
+                <td>{{ gameState.board.1.1 }}</td>
+                <td>{{ gameState.board.1.2 }}</td>
+              </tr>
+              <tr>
+                <td>{{ gameState.board.2.0 }}</td>
+                <td>{{ gameState.board.2.1 }}</td>
+                <td>{{ gameState.board.2.2 }}</td>
+              </tr>
+            </table>
+          </div>
+       
+          <script src="{% static 'game_logic.js' %}"></script>     
+        
+    </body>
+</html>

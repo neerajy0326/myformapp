@@ -63,6 +63,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     verified_badge = models.BooleanField(default=False)
     verification_expiration = models.DateTimeField(null=True, blank=True)
     pin = models.CharField(max_length=4, blank=True)
+    followers_count = models.PositiveIntegerField(default=0)
+    following_count = models.PositiveIntegerField(default=0)
       
     
     
@@ -132,7 +134,7 @@ User = get_user_model()
 class Comment(models.Model):
     post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -148,7 +150,7 @@ class VerificationPlan(models.Model):
         return self.name
 
 class VerificationBadge(models.Model):
-    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='verification_badge')
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name='verification_badge')
     plan = models.ForeignKey(VerificationPlan, on_delete=models.CASCADE)
     verified = models.BooleanField(default=False)
     verification_expiration = models.DateTimeField(null=True, blank=True)
@@ -164,3 +166,18 @@ class WalletTransaction(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     description = models.CharField(max_length=200 , default='Regular Transaction')
     
+
+    def __str__(self):
+        return f"{self.description} ,users {self.sender.username},{self.receiver.username} of Rs {self.amount}" 
+
+
+    
+class UserConnection(models.Model):
+    follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='following')
+    following = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followers')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'following')
+
+

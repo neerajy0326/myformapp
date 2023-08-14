@@ -1,3 +1,16 @@
+<h2>Users {{ user.username }} is Following</h2>
+<ul>
+    {% for follow in following %}
+        <li>{{ follow.following.username }}</li>
+    {% endfor %}
+</ul>
+
+
+
+
+
+
+
 {% load tz %} {% load static %}{% load custom_filters %}
 <!DOCTYPE html>
 <html>
@@ -29,7 +42,7 @@
     border: 2px solid #ccc; 
     padding: 20px; 
     border-radius: 10px;
-    {% if user.verified_badge %}
+    {% if request.user.verified_badge %}
     background-image: linear-gradient(#c3ddc9, #73e0f0d2);
     {% else %}
     background-color: #f9f9f9; 
@@ -126,51 +139,32 @@
            
               <div class="header-container row align-items-center">
                
-                <h1 class="col-md-9">Users</h1>
+                <h2 class="col-md-9">Users {{ user.username }} is Following</h2>
                 
             </div>
         
                 <div class="container mt-5">
-
+                   
+                   
                   <ul class="user-list">
-                    {% for user in users %}
-                    {% if user != request.user %}
-                    <li class="blog-list-item custom-marker" style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                      <div class="user-info" style="flex: 1; display: flex; align-items: center;">
-                        {% if user.profile_picture %}
-                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="user-profile-pic">
+                    {% for follow in following %}
+                   
+                    <li class="blog-list-item custom-marker" style="margin-bottom: 10px; display: flex; align-items: center;">
+                      <div class="user-info">
+                        {% if follow.following.profile_picture %}
+                        <img src="{{ follow.following.profile_picture.url }}" alt="{{ follow.following.username }}'s photo" class="user-profile-pic">
                         {% else %}
                         <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
                         {% endif %}
-                        <a href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
-                        {% if user.verified_badge %}
+                        <a href="{% url 'user_detail' follow.following.pk  %}">{{ follow.following.username }}</a>
+                        {% if follow.following.verified_badge %}
                         <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
                         {% endif %}
-                       {% if user.show_active_status %}
-                        {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
-                            <span class="green-dot"></span>
-                        {% endif %}
-                        {% if user.last_active is  None %}
-                            <span class="red-dot"></span>
-                         
-                        {% endif %}
-                        {% if user.last_active is not None and user.last_active|format_last_active != "active now" %}
-                            <span class="orange-dot"></span>
-                        {% endif %}
-                       {% endif %}
-                    </div>
-                    <div class="follow-btn">
-                      {% if user != request.user %}
-                      {% if user.id in following_users %}
-                          <a href="{% url 'unfollow_user' user.pk %}" class="btn btn-secondary">Unfollow</a>
-                      {% else %}
-                          <a href="{% url 'follow_user' user.pk %}" class="btn btn-primary">Follow</a>
-                      {% endif %}
-                  {% endif %}
+                     
                     </div>
                     
                     </li>
-                    {% endif %}
+                   
                     {% endfor %}
                 </ul>
             </div>
@@ -189,7 +183,7 @@
           <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'profile' %}">
             {% if user.profile_picture %}
-                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+                <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
             {% else %}
             
             <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">

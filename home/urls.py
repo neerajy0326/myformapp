@@ -28,7 +28,7 @@ urlpatterns = [
     path('blog_list/my_blogs/', views.my_blogs, name='my_blogs'),
     path('profile/edit_profile/delete_account/', views.delete_account, name='delete_account'),
     path('user_list/',views.user_list, name='user_list'),
-    path('user_list/user_detail/<int:pk>/', views.user_detail, name='user_detail'),
+    path('user_detail/<int:pk>/', views.user_detail, name='user_detail'),
     path('chat/',views.chat, name='chat'),
     path('profile/account_settings/', views.account_settings, name='account_settings'),
     path('blog_list/post/<int:post_pk>/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
@@ -42,6 +42,11 @@ urlpatterns = [
     path('profile/under_construction', views.under_construction, name='under_construction'),
     path('profile/wallet_detail/add_funds/', views.add_funds, name='add_funds'),
     path('profile/change_pin/', views.change_pin, name='change_pin'),
+    path('profile/user_detail/<int:pk>/follow/', views.follow_user, name='follow_user'),
+    path('profile/user_detail/<int:pk>/unfollow/', views.unfollow_user, name='unfollow_user'),
+    path('profile/user_detail/<int:pk>/followers/', views.user_followers, name='user_followers'),
+    path('profile/user_detail/<int:pk>/following/', views.user_following, name='user_following'),
+
     
   
     

@@ -31,6 +31,70 @@ from .models import VerificationPlan, VerificationBadge
 from decimal import Decimal
 from django.http import JsonResponse
 import time
+from .models import CustomUser, UserConnection
+
+@login_required
+def follow_user(request,pk):
+    user_to_follow = get_object_or_404(CustomUser, pk=pk)
+    connection, created = UserConnection.objects.get_or_create(
+        follower=request.user,
+        following=user_to_follow
+    )
+    if created:
+        user_to_follow.followers_count += 1
+        user_to_follow.save()
+        request.user.following_count += 1
+        request.user.save()
+
+    referer = request.META.get('HTTP_REFERER', '')
+    print("Referer:", referer)
+
+    
+    
+    if 'user_detail' in referer:
+        return redirect('user_detail', pk=pk)
+    else:
+        return redirect('user_list')
+
+@login_required
+def unfollow_user(request, pk):
+    user_to_unfollow = get_object_or_404(CustomUser, pk=pk)
+    try:
+        connection = UserConnection.objects.get(
+            follower=request.user,
+            following=user_to_unfollow
+        )
+        connection.delete()
+        user_to_unfollow.followers_count -= 1
+        user_to_unfollow.save()
+        request.user.following_count -= 1
+        request.user.save()
+    except UserConnection.DoesNotExist:
+        pass
+
+    referer = request.META.get('HTTP_REFERER', '')
+
+
+    if 'user_detail' in referer:
+        return redirect('user_detail', pk=pk)
+    else:
+        return redirect('user_list')
+
+@login_required
+def user_followers(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
+    followers = UserConnection.objects.filter(following=user)
+    return render(request, 'user_followers.html', {'user': user, 'followers': followers})
+
+@login_required
+def user_following(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
+    following = UserConnection.objects.filter(follower=user)
+    return render(request, 'user_following.html', {'user': user, 'following': following})
+
+
+
+
 
 
 @login_required
@@ -381,7 +445,9 @@ def user_list(request):
             request.user.save()
     users = CustomUser.objects.all()
 
-    return render(request, 'user_list.html', {'users': users})
+    following_users = UserConnection.objects.filter(follower=request.user).values_list('following__id', flat=True)
+
+    return render(request, 'user_list.html', {'users': users , 'following_users': following_users})
 
 def user_detail(request, pk):
     request.user.last_active = timezone.now()
@@ -389,8 +455,12 @@ def user_detail(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     user_blogs_count = BlogPost.objects.filter(author=user.username).count()
     user_blogs = BlogPost.objects.filter(author=user.username).order_by('-pub_date')
+    is_following = UserConnection.objects.filter(
+        follower=request.user,
+        following=user
+    ).exists()
   
-    return render(request, 'user_detail.html', {'user': user ,'user_blogs_count': user_blogs_count, 'user_blogs': user_blogs}  )
+    return render(request, 'user_detail.html', {'user': user ,'user_blogs_count': user_blogs_count, 'user_blogs': user_blogs ,'is_following': is_following}  )
 
 
 @login_required

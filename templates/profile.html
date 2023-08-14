@@ -91,6 +91,38 @@
   width: 350px;
   height: 320px;
 }
+
+.profile-info {
+  margin: 20px;
+}
+
+/* Style for the followers and following links */
+.follower-following a {
+  color: #333;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+/* Style for the Follow/Unfollow button */
+.follow-btn a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+/* Style for the Unfollow button */
+.follow-btn a.unfollow {
+  background-color: #e74c3c;
+}
+
+/* Style for the count inside the links */
+.follower-following .count {
+  font-weight: bold;
+  margin-right: 5px;
+}
   </style>
   <script>
     function openUserDetail(badge_date ) {
@@ -178,14 +210,26 @@
               <p>{{ user.bio }}</p>
               {% endif %}
               {% if user.verified_badge %}
-              <a onclick="openUserDetail('{{ user.verification_expiration|date:"F j, Y" }}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userDetailModal"><i class="bi bi-patch-check-fill " style="margin-right: 3px;"> </i>Badge details</a>  
-            {% else %}
-              <a href="{% url 'badge_selection' %}" class="btn btn-primary"><i class="bi bi-patch-check-fill " style="margin-right: 3px;"> </i>Get Verified Badge</a>
-            {% endif %}
-
+              <a onclick="openUserDetail('{{ user.verification_expiration|date:"F j, Y" }}')" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userDetailModal">
+                  <i class="bi bi-patch-check-fill" style="margin-right: 3px;"></i> Badge details
+              </a>
+          {% else %}
+              <a href="{% url 'badge_selection' %}" class="btn btn-primary mb-3">
+                  <i class="bi bi-patch-check-fill" style="margin-right: 3px;"></i> Get Verified Badge
+              </a>
+          {% endif %}
+          
+          <div class="follower-following">
+              <a href="{% url 'user_followers' user.pk %}">
+                  <span class="count">{{ user.followers_count }}</span> Followers
+              </a>
+              <a href="{% url 'user_following' user.pk %}">
+                  <span class="count">{{ user.following_count }}</span> Following
+              </a>
+          </div>
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Username:</strong> {{ user.username }}</p>
-            <p><strong>Date of Birth:</strong> {{ user.date_of_birth }}</p>
+           
             <p><strong>Your Posts: </strong>{{ my_blogs_count }}</p>
             
           
