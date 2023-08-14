@@ -594,6 +594,9 @@ def payment(request, plan_id):
                   messages.error(request, 'Insufficient wallet balance.')
             else:
                 messages.error(request, 'Incorrect PIN. Payment not processed.')
+    if user.verification_expiration and user.verification_expiration <= timezone.now():
+        user.verified_badge = False
+        user.save()            
 
     return render(request, 'payment.html', {'plan': plan, 'coupons': coupons, 'updated_price': updated_price})
 
