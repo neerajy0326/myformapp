@@ -49,19 +49,19 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top: -30px; /* Adjust as needed */
-  margin-right: 10px; /* Adjust as needed */
+  margin-top: -30px;
+  margin-right: 10px;
   
 }
 
 .wallet-icon,
 .wallet-balance {
-  margin: 0 5px; /* Adjust spacing */
+  margin: 0 5px; 
   
 }
 
 .wallet-balance {
-  position: relative; /* Add this line */
+  position: relative; 
 }
 
 
@@ -198,10 +198,11 @@
           <h2 class="welcome-heading">Welcome, <span class="user-name">{{ user.full_name }}{% if user.verified_badge %}
             <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
             {% endif %}</span></h2>
+           
           <div class="wallet-container">
             <div class="wallet-icon">
             
-              <i class="bi bi-wallet2 blue-fill-icon"></i>
+              <i class="bi bi-wallet2 blue-fill-icon" ></i>
                 
             </div>
             <div class="wallet-balance">
@@ -220,18 +221,16 @@
                 <img src="{% static 'df.jpeg' %}" alt="Default Profile Picture">
               {% endif %}
               </a>
+              
             </div>
-              {% if user.bio %}
-              <p>{{ user.bio }}</p>
-              {% endif %}
-              {% if user.verified_badge %}
-              <a onclick="openUserDetail('{{ user.verification_expiration|date:"F j, Y" }}')" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userDetailModal">
-                  <i class="bi bi-patch-check-fill" style="margin-right: 3px;"></i> Badge details
-              </a>
-          {% else %}
+            <hr>
+             
+            
+          {% if not user.verified_badge %}
               <a href="{% url 'badge_selection' %}" class="btn btn-primary mb-3">
                   <i class="bi bi-patch-check-fill" style="margin-right: 3px;"></i> Get Verified Badge
               </a>
+              <hr>
           {% endif %}
           
           <div class="follower-following">
@@ -241,7 +240,12 @@
               <a href="{% url 'user_following' user.pk %}">
                   <span class="count">{{ user.following_count }}</span> Following
               </a>
+              <hr>
           </div>
+          {% if user.bio %}
+          <p>{{ user.bio }}</p>
+          {% endif %}
+
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Username:</strong> {{ user.username }}</p>
            
@@ -258,12 +262,19 @@
             
         
           </div>
+          <hr>
+          {% if user.verified_badge %}
+          <a onclick="openUserDetail('{{ user.verification_expiration|date:"F j, Y" }}')" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#userDetailModal">
+              <i class="bi bi-patch-check-fill" style="margin-right: 3px;"></i> Badge details
+          </a>
+          {% endif %}
           <a href="{% url 'transfer_money' %}" class="btn btn-primary">
             
             Transfer money
           </a>
-        
-          <a href="{% url 'dice_roll_game' %}" class="btn btn-primary">Play Dice roll game</a>
+          <a href="{% url 'wallet_detail' %}" class="btn btn-primary">Open wallet</a>
+          <a href="{% url 'dice_roll_game' %}" class="btn btn-primary">Play Dice game</a>
+          
           </div>
         
         </div>

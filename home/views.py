@@ -571,7 +571,7 @@ def payment(request, plan_id):
             if user.pin == pin:
                if user.balance >= updated_price:
                   
-                  expiration_date = timezone.now() + timedelta(days=plan.duration_days)
+                  expiration_date = timezone.now() + timedelta(hours=plan.duration_days)
                   updated_price_decimal = Decimal(request.session.get('updated_price', str(original_price)))
                   request.user.balance -= updated_price_decimal
                   request.user.verified_badge = True
@@ -809,6 +809,9 @@ def dice_roll_game(request):
         
         if bet_amount <= 0:
             return render(request, 'dice_roll_game.html', {'error': 'Bet amount must be positive.'})
+        
+        if bet_amount < 10:
+            return render(request, 'dice_roll_game.html', {'error': 'Minimum amount should be Rs 10'})
         
         if bet_amount > request.user.balance:
             return render(request, 'dice_roll_game.html', {'error': 'Insufficient balance.'})
