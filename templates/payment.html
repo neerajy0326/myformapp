@@ -54,9 +54,9 @@
             <input type="text" name="coupon_code" class="form-control">
         </div>
         {% if updated_price < plan.price %}
-        <button type="submit" name="remove_coupon" class="remove-coupon-btn">Remove Coupon</button>
+        <button type="submit" name="remove_coupon" class="btn btn-secondary">Remove Coupon</button>
     {% else %}
-        <button type="submit" name="apply_coupon" class="apply-coupon-btn">Apply Coupon</button>
+        <button type="submit" name="apply_coupon" class="btn btn-primary">Apply Coupon</button>
     {% endif %}
     </form>
 

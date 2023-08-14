@@ -555,6 +555,7 @@ def payment(request, plan_id):
                 coupon = Coupon.objects.get(code=coupon_code)
                 updated_price = original_price * (100 - coupon.discount_percent) / 100
                 request.session['updated_price'] = float(updated_price)
+                messages.success(request, f'{coupon.discount_percent}% Discount coupon applied successfully!')
             except Coupon.DoesNotExist:
                 messages.error(request, 'Invalid coupon code.')
 
