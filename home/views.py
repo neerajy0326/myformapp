@@ -295,16 +295,14 @@ def password_reset_confirm(request, uidb64, token):
 @login_required
 def profile(request):
     if request.user.show_active_status:
-            request.user.last_active = timezone.now()
-            request.user.save()
+        request.user.last_active = timezone.now()
+        request.user.save()
+
     user = request.user.username
     my_blogs_count = BlogPost.objects.filter(author=user).count()
-    last_seen_notification = request.user.last_seen_notification
-    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
-    unread_notifications = notifications.filter(seen=False)  
+    unread_notifications = Notification.objects.filter(user=request.user, seen=False).count()
 
-
-    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count ,'unread_count': unread_notifications.count()})
+    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count, 'unread_count': unread_notifications})
    
 
 def register(request):
@@ -497,12 +495,25 @@ def like_post(request, pk):
     request.user.last_active = timezone.now()
     request.user.save()
     blog_post = get_object_or_404(BlogPost, pk=pk)
-    if request.user in blog_post.likes_users.all():
+    is_liked = request.user in blog_post.likes_users.all()
+
+    if is_liked:
         blog_post.likes_users.remove(request.user)
+        remove_notification = True
     else:
         blog_post.likes_users.add(request.user)
+        remove_notification = False
     blog_post.save()
-    if request.user.username != blog_post.author:
+
+    if remove_notification:
+        author_user = CustomUser.objects.get(username=blog_post.author)
+        Notification.objects.filter(
+            user=author_user,
+            notification_type='like',
+            source_user=request.user,
+            blog_post=blog_post
+        ).delete()
+    if not is_liked and request.user.username != blog_post.author:
        
         author_user = CustomUser.objects.get(username=blog_post.author)
         
@@ -736,16 +747,23 @@ def change_pin(request):
 
 @login_required
 def view_notifications(request):
-    
     request.user.last_active = timezone.now()
-    if request.path == reverse('notifications'):  # Check if user accessed the notifications page
+    
+    if request.path == reverse('notifications'): 
         request.user.last_seen_notification = timezone.now()
         request.user.save()
-    Notification.objects.filter(user=request.user).order_by('-timestamp')
+
+        
+        Notification.objects.filter(user=request.user, seen=False).update(seen=True)
+
     notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
-    
+
     return render(request, 'notifications.html', {'notifications': notifications})
 
+@login_required
+def clear_notifications(request):
+    Notification.objects.filter(user=request.user).delete()
+    return redirect('notifications')
 
 
 def under_construction(request):

@@ -130,11 +130,14 @@
               <div class="header-container row align-items-center">
                
                 <h2 class="col-md-9">Notifications </h2>
-                
+                {% if notifications %}
+                <a href="{% url 'clear_notifications' %}" class="btn btn-danger">Clear All Notifications</a>
+            {% endif %}
             </div>
-        
+         
                 <div class="container mt-5">
-                   
+                    
+
                    
                     <ul>
                         {% for notification in notifications %}

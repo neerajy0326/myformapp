@@ -47,6 +47,7 @@ urlpatterns = [
     path('profile/user_detail/<int:pk>/followers/', views.user_followers, name='user_followers'),
     path('profile/user_detail/<int:pk>/following/', views.user_following, name='user_following'),
     path('notifications/', views.view_notifications, name='notifications'),
+    path('clear_notifications/', views.clear_notifications, name='clear_notifications'),
 
     
   
