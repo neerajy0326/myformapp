@@ -161,11 +161,11 @@
               
                 <div class="container mt-5">
                     <ul>
-                      {% for blog_post in blog_posts %}
+                      {% for post in posts %}
                         <li class="blog-list-item custom-marker" style="margin-bottom: 10px;">
-                            <a href="{% url 'blog_detail' blog_post.pk %}" style="text-decoration: none; color: #000;">{{ blog_post.title }}</a>
-                            <span class="author-name">(by {{ blog_post.author }})</span>
-                            <span class="pub-date">({{ blog_post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
+                            <a href="{% url 'blog_detail' post.pk %}" style="text-decoration: none; color: #000;">{{ post.title }}</a>
+                            <span class="author-name">(by {{ post.author }})</span>
+                            <span class="pub-date">({{ post.pub_date|timezone:"Asia/Kolkata"|date:'F d, Y H:i' }})</span>
                             
                         </li>
                       {% endfor %}

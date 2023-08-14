@@ -65,6 +65,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     pin = models.CharField(max_length=4, blank=True)
     followers_count = models.PositiveIntegerField(default=0)
     following_count = models.PositiveIntegerField(default=0)
+    last_seen_notification = models.DateTimeField(blank=True, null=True)
       
     
     
@@ -179,5 +180,21 @@ class UserConnection(models.Model):
 
     class Meta:
         unique_together = ('follower', 'following')
+
+
+NOTIFICATION_TYPES = [
+    ('like', 'Like'),
+    ('comment', 'Comment'),
+    ('follow', 'Follow'),
+]
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    source_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='source_user', on_delete=models.CASCADE)
+    blog_post = models.ForeignKey(BlogPost, blank=True, null=True, on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    seen = models.BooleanField(default=False)
+    comment = models.ForeignKey(Comment, blank=True, null=True, on_delete=models.CASCADE) 
 
 

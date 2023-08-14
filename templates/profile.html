@@ -103,7 +103,7 @@
   margin-right: 20px;
 }
 
-/* Style for the Follow/Unfollow button */
+
 .follow-btn a {
   display: inline-block;
   padding: 10px 20px;
@@ -113,15 +113,24 @@
   border-radius: 5px;
 }
 
-/* Style for the Unfollow button */
 .follow-btn a.unfollow {
   background-color: #e74c3c;
 }
 
-/* Style for the count inside the links */
+
 .follower-following .count {
   font-weight: bold;
   margin-right: 5px;
+}
+.notification-count {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  position: relative;
+  top: -8px;
+  left: -4px;
 }
   </style>
   <script>
@@ -177,7 +186,13 @@
           <div class="d-flex justify-content-end ">
             <a href="{% url 'account_settings' %}" class="text-decoration-none text-dark">
               <i class="bi bi-gear" style="font-size: 24px;"></i>    
-          </a>
+            </a>
+            <a href="{% url 'notifications' %}" style="margin-left: 10px;">
+              <i class="bi bi-bell"  style="font-size: 24px;"></i> 
+              {% if unread_count > 0 %}
+              <span class="notification-count">{{ unread_count }}</span>
+          {% endif %}
+            </a>
 
         </div>
           <h2 class="welcome-heading">Welcome, <span class="user-name">{{ user.full_name }}{% if user.verified_badge %}

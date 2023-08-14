@@ -31,7 +31,7 @@ from .models import VerificationPlan, VerificationBadge
 from decimal import Decimal
 from django.http import JsonResponse
 import time
-from .models import CustomUser, UserConnection
+from .models import CustomUser, UserConnection ,Notification
 
 @login_required
 def follow_user(request,pk):
@@ -45,6 +45,13 @@ def follow_user(request,pk):
         user_to_follow.save()
         request.user.following_count += 1
         request.user.save()
+
+        Notification.objects.create(
+            user=user_to_follow,
+            source_user=request.user,
+            notification_type='follow'
+        )
+
 
     referer = request.META.get('HTTP_REFERER', '')
     print("Referer:", referer)
@@ -292,7 +299,13 @@ def profile(request):
             request.user.save()
     user = request.user.username
     my_blogs_count = BlogPost.objects.filter(author=user).count()
-    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count})
+    last_seen_notification = request.user.last_seen_notification
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
+    unread_notifications = notifications.filter(seen=False)  
+
+
+    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count ,'unread_count': unread_notifications.count()})
+   
 
 def register(request):
     if request.user.is_authenticated:
@@ -328,15 +341,18 @@ def register(request):
 def blog_list(request):
     request.user.last_active = timezone.now()
     request.user.save()
-    # Read operation - Fetch all blog posts from the database
-    blog_posts = BlogPost.objects.all().order_by('-pub_date')
-    return render(request, 'blog_list.html', {'blog_posts': blog_posts})
+    
+    following_usernames = UserConnection.objects.filter(follower=request.user).values_list('following__username', flat=True)
+    posts = BlogPost.objects.filter(Q(author__in=following_usernames) | Q(author=request.user.username)).order_by('-pub_date')
+    return render(request, 'blog_list.html', {'posts': posts})
+
+
 @login_required
 def blog_detail(request, pk):
     request.user.last_active = timezone.now()
     request.user.save()
     blog_post = get_object_or_404(BlogPost, pk=pk)
-    comments = blog_post.comments.all()  # Get all comments associated with the post
+    comments = blog_post.comments.all() 
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -345,6 +361,20 @@ def blog_detail(request, pk):
             comment.post = blog_post
             comment.author = request.user
             comment.save()
+
+            if request.user.username != blog_post.author:
+       
+                author_user = CustomUser.objects.get(username=blog_post.author)
+        
+       
+                Notification.objects.create(
+                    user=author_user,  
+                    notification_type='comment',
+                    source_user=request.user,
+                    blog_post=blog_post,
+                    comment=comment 
+                )
+            
             return redirect('blog_detail', pk=blog_post.pk)
     else:
         form = CommentForm()
@@ -358,15 +388,14 @@ def delete_comment(request, post_pk, comment_id):
     request.user.last_active = timezone.now()
     request.user.save()
     if request.method == 'POST':
-        # Fetch the comment by comment_id
+        
         try:
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
-            # Handle the case if the comment doesn't exist
-            # You can redirect or show an error message here
+           
             pass
         else:
-            # Check if the current user is the author of the comment or the blog post
+            
             if request.user == comment.author or request.user == comment.post.author:
                 comment.delete()
     return redirect('blog_detail', pk=post_pk)
@@ -375,7 +404,7 @@ def delete_comment(request, post_pk, comment_id):
 def blog_create(request):
     request.user.last_active = timezone.now()
     request.user.save()
-    # Create operation - Save a new blog post to the database
+    
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -396,7 +425,7 @@ def blog_create(request):
 def blog_update(request, pk):
     request.user.last_active = timezone.now()
     request.user.save()
-    # Update operation - Update an existing blog post in the database
+   
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if request.method == 'POST':
         form = BlogPostForm(request.POST, instance=blog_post)
@@ -473,6 +502,17 @@ def like_post(request, pk):
     else:
         blog_post.likes_users.add(request.user)
     blog_post.save()
+    if request.user.username != blog_post.author:
+       
+        author_user = CustomUser.objects.get(username=blog_post.author)
+        
+       
+        Notification.objects.create(
+            user=author_user,  
+            notification_type='like',
+            source_user=request.user,
+            blog_post=blog_post
+        )
     return redirect('blog_detail', pk=pk)
 
 
@@ -694,7 +734,17 @@ def change_pin(request):
     return render(request, 'change_pin.html')
 
 
-
+@login_required
+def view_notifications(request):
+    
+    request.user.last_active = timezone.now()
+    if request.path == reverse('notifications'):  # Check if user accessed the notifications page
+        request.user.last_seen_notification = timezone.now()
+        request.user.save()
+    Notification.objects.filter(user=request.user).order_by('-timestamp')
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')
+    
+    return render(request, 'notifications.html', {'notifications': notifications})
 
 
 
