@@ -39,21 +39,26 @@
     </div>
 
     <div class="centre-content">
-        <h1 class="price">₹{{ plan.price }}</h1>
-        <p class="course">
-            {{ plan.name }}
-        </p>
-    </div>
+      <h1 class="price">₹<span id="updated-price">{{ updated_price }}</span></h1>
+      <p class="course">
+          {{ plan.name }}
+      </p>
+  </div>
 
     <div class="last-content">
-        <button type="button"
-                class="pay-now-btn">
-            Apply Coupons
-        </button>
-      
-
-    
-    </div>
+      <form method="post">
+       
+        <div class="mb-3">
+        
+            <label for="coupon_code" class="form-label">Coupon Code</label>
+            <input type="text" name="coupon_code" class="form-control">
+        </div>
+        {% if updated_price < plan.price %}
+        <button type="submit" name="remove_coupon" class="remove-coupon-btn">Remove Coupon</button>
+    {% else %}
+        <button type="submit" name="apply_coupon" class="apply-coupon-btn">Apply Coupon</button>
+    {% endif %}
+    </form>
 
     <div class="card-details">
           
@@ -64,7 +69,7 @@
                 <label for="pin" class="form-label">PIN</label>
                 <input type="password" name="pin" class="form-control" required>
             </div>
-         <button type="submit"
+         <button type="submit" name="pay_now"
                 class="submit-now-btn">
             Pay now
          </button>
@@ -74,6 +79,27 @@
         </form> 
     </div>
 </div>
+
+<script>
+  const couponCodeInput = document.querySelector('input[name="coupon_code"]');
+  const updatedPriceElement = document.getElementById('updated-price');
+
+  couponCodeInput.addEventListener('input', () => {
+      const selectedCouponCode = couponCodeInput.value;
+      const originalPrice = {{ plan.price }};
+      
+      let updatedPrice = originalPrice;
+      
+     
+      {% for coupon in coupons %}
+          if (selectedCouponCode === "{{ coupon.code }}") {
+              updatedPrice = (originalPrice * (100 - {{ coupon.discount_percent }})) / 100;
+          }
+      {% endfor %}
+      
+      updatedPriceElement.textContent = updatedPrice.toFixed(2);
+  });
+</script>
    
 </body>
 </html>

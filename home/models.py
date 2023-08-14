@@ -199,6 +199,22 @@ class Notification(models.Model):
  
     def __str__(self):
         return self.user
+    
+class DiceRollGame(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bet_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    chosen_number = models.IntegerField()
+    rolled_number = models.IntegerField()
+    won = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)  
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=10, unique=True)
+    discount_percent = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.code      
 
 
 

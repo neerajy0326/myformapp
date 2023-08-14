@@ -11,6 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost ,WalletTransaction
+from .models import DiceRollGame
+import random
+from .models import Coupon
 from .forms import BlogPostForm,CommentForm
 import os
 from django.db.models import Q
@@ -540,36 +543,58 @@ def payment(request, plan_id):
         messages.warning(request, 'Please set up a PIN first.')
         return redirect('setup_pin')
     plan = VerificationPlan.objects.get(pk=plan_id)
+    coupons = Coupon.objects.all()
+    original_price = plan.price
+    updated_price = request.session.get('updated_price', original_price)
 
     if request.method == 'POST':
-        pin = request.POST.get('pin')  # Get the PIN from the form
-        user = request.user
+        if 'apply_coupon' in request.POST:  
+            coupon_code = request.POST.get('coupon_code')
 
-        # Verify PIN
-        if user.pin == pin:
-            if user.balance >= plan.price:
-                expiration_date = timezone.now() + timedelta(days=plan.duration_days)
-                request.user.balance -= plan.price
-                request.user.verified_badge = True
-                request.user.verification_expiration = expiration_date
-                request.user.save()
+            try:
+                coupon = Coupon.objects.get(code=coupon_code)
+                updated_price = original_price * (100 - coupon.discount_percent) / 100
+                request.session['updated_price'] = float(updated_price)
+            except Coupon.DoesNotExist:
+                messages.error(request, 'Invalid coupon code.')
 
-                WalletTransaction.objects.create(
-                sender=request.user,
-                receiver=request.user,  # Self-receiver for payment
-                amount=plan.price,
-                description=f'Payment for Verification Badge'
-                )
-                VerificationBadge.objects.create(user=user, plan=plan, verified=True)
-                send_verification_success_email(user, plan)
-                messages.success(request, 'Payment successful. You are now verified!')
-                return redirect('profile')  
+        elif 'remove_coupon' in request.POST: 
+             updated_price = original_price 
+             request.session['updated_price'] = float(updated_price)      
+
+        elif 'pay_now' in request.POST:  
+            pin = request.POST.get('pin')
+            
+
+        
+            if user.pin == pin:
+               if user.balance >= updated_price:
+                  
+                  expiration_date = timezone.now() + timedelta(days=plan.duration_days)
+                  updated_price_decimal = Decimal(request.session.get('updated_price', str(original_price)))
+                  request.user.balance -= updated_price_decimal
+                  request.user.verified_badge = True
+                  request.user.verification_expiration = expiration_date
+                  request.user.save()
+
+                  WalletTransaction.objects.create(
+                  sender=request.user,
+                  receiver=request.user, 
+                  amount=updated_price_decimal,
+                  description=f'Payment for Verification Badge'
+                  )
+                  VerificationBadge.objects.create(user=user, plan=plan, verified=True)
+                  send_verification_success_email(user, plan)
+                  messages.success(request, 'Payment successful. You are now verified!')
+                  if 'updated_price' in request.session:
+                        del request.session['updated_price']
+                  return redirect('profile')  
+               else:
+                  messages.error(request, 'Insufficient wallet balance.')
             else:
-                messages.error(request, 'Insufficient wallet balance.')
-        else:
-            messages.error(request, 'Incorrect PIN. Payment not processed.')
+                messages.error(request, 'Incorrect PIN. Payment not processed.')
 
-    return render(request, 'payment.html', {'plan': plan})
+    return render(request, 'payment.html', {'plan': plan, 'coupons': coupons, 'updated_price': updated_price})
 
 def send_verification_success_email(user ,plan):
     subject = 'Verification Badge Success'
@@ -710,15 +735,19 @@ def setup_pin(request):
 def add_funds(request):
     if request.method == 'POST':
         amount = Decimal(request.POST.get('amount'))
+
+        max_allowed_amount = Decimal(1000)
         
-        if amount > 0:
+        if amount > 0 and amount <= max_allowed_amount:
             user = request.user
             user.balance += amount
             user.save()
             messages.success(request, f'Successfully added Rs {amount} to your wallet.')
             return redirect('profile')
+        elif amount <= 0:
+            messages.error(request, 'Enter a valid positive amount.')
         else:
-            messages.error(request, 'Enter a valid amount.')
+            messages.error(request, f'Amount exceeds the maximum limit of Rs {max_allowed_amount}.')
     return render(request, 'add_funds.html')
 
 
@@ -768,4 +797,48 @@ def clear_notifications(request):
 
 def under_construction(request):
     return render(request,'uc.html')
+
+
+
+@login_required
+def dice_roll_game(request):
+    if request.method == 'POST':
+        bet_amount = Decimal(request.POST['bet_amount'])
+        chosen_number = int(request.POST['chosen_number'])
+        
+        if bet_amount <= 0:
+            return render(request, 'dice_roll_game.html', {'error': 'Bet amount must be positive.'})
+        
+        if bet_amount > request.user.balance:
+            return render(request, 'dice_roll_game.html', {'error': 'Insufficient balance.'})
+        
+        rolled_number = random.randint(1, 6)  
+        won = rolled_number == chosen_number
+        
+        if won:
+            reward = bet_amount
+            request.user.balance += reward
+        else:
+            request.user.balance -= bet_amount
+        
+        request.user.save()
+        
+        DiceRollGame.objects.create(
+            user=request.user,
+            bet_amount=bet_amount,
+            chosen_number=chosen_number,
+            rolled_number=rolled_number,
+            won=won
+        )
+        game_result = "You won!" if won else "You lost!"
+        return render(request, 'dice_roll_game.html', {'game_result': game_result , 'rolled_number': rolled_number})
+    
+    return render(request, 'dice_roll_game.html')
+
+@login_required
+def game_history(request):
+    game_history = DiceRollGame.objects.filter(user=request.user).order_by('-timestamp')
+    for game in game_history:
+        game.won_amount = game.bet_amount
+    return render(request, 'game_history.html', {'game_history': game_history})
 

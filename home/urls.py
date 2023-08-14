@@ -48,6 +48,8 @@ urlpatterns = [
     path('profile/user_detail/<int:pk>/following/', views.user_following, name='user_following'),
     path('notifications/', views.view_notifications, name='notifications'),
     path('clear_notifications/', views.clear_notifications, name='clear_notifications'),
+    path('dice_roll_game/', views.dice_roll_game, name='dice_roll_game'),
+    path('game_history/', views.game_history, name='game_history'),
 
     
   
