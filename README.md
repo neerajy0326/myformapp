@@ -40,6 +40,8 @@ Visit http://localhost:8000/ in your web browser to access the application.
     -Follow other users and see their posts in your feed.
     -Search for users and posts.
     -Notifications for new likes and comments.
+    -wallet money
+    -verified badge option
     -Private messaging between users (upcoming feature).
 
 
