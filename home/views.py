@@ -35,6 +35,8 @@ from decimal import Decimal
 from django.http import JsonResponse
 import time
 from .models import CustomUser, UserConnection ,Notification
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 
 @login_required
 def follow_user(request,pk):
@@ -403,6 +405,7 @@ def delete_comment(request, post_pk, comment_id):
 
 @login_required
 def blog_create(request):
+    
     request.user.last_active = timezone.now()
     request.user.save()
     
@@ -412,6 +415,9 @@ def blog_create(request):
             blog_post = form.save(commit=False)  
             blog_post.author = request.user.username
             blog_post.save() 
+            award_wallet_money_for_posts(request.user.username, 4, 50 , request)
+            coupon_code = "1234" 
+            award_coupon_for_posts(request.user.username, coupon_code, request)
             messages.success(request, 'Blog post created successfully.')
             return redirect('blog_list')  
            
@@ -443,7 +449,7 @@ def blog_update(request, pk):
 def blog_delete(request, pk):
     request.user.last_active = timezone.now()
     request.user.save()
-    # Delete operation - Delete a blog post from the database
+   
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if blog_post.author == request.user.username:
      if request.method == 'POST':
@@ -538,6 +544,7 @@ def badge_selection(request):
 
 def payment(request, plan_id):
     user = request.user
+    owned_coupon_codes = user.owned_coupons.split(",") if user.owned_coupons else []
     
     if not user.pin:
         messages.warning(request, 'Please set up a PIN first.')
@@ -598,7 +605,7 @@ def payment(request, plan_id):
         user.verified_badge = False
         user.save()            
 
-    return render(request, 'payment.html', {'plan': plan, 'coupons': coupons, 'updated_price': updated_price})
+    return render(request, 'payment.html', {'plan': plan, 'coupons': coupons, 'updated_price': updated_price, 'owned_coupon_codes': owned_coupon_codes})
 
 def send_verification_success_email(user ,plan):
     subject = 'Verification Badge Success'
@@ -859,3 +866,42 @@ def clear_all_games(request):
         messages.info(request, 'No game history to clear.')
 
     return redirect('game_history')
+
+
+
+def award_coupon_for_posts(username, coupon_code, request):
+    try:
+        user = CustomUser.objects.get(username=username)
+        today = timezone.now().date()
+        posts_today = BlogPost.objects.filter(author=username, timestamp__date=today).count()
+
+        if posts_today == 2 and not request.session.get('coupon_awarded'):
+            try:
+                coupon = Coupon.objects.get(code=coupon_code)
+                user.owned_coupons += ("," + coupon_code)
+                request.session['coupon_awarded'] = True 
+                messages.success(request, 'Congratulations! You have received a coupon for making two posts today.Use at payment page')
+                
+                user.save()
+            except Coupon.DoesNotExist:
+                pass
+    except CustomUser.DoesNotExist:
+        pass
+
+
+
+
+def award_wallet_money_for_posts(username, post_count, reward_amount , request):
+    try:
+        user = CustomUser.objects.get(username=username)
+        today = timezone.now().date()
+        posts_today = BlogPost.objects.filter(author=username, pub_date__date=today).count()
+
+        if posts_today >= post_count and not request.session.get('wallet_rewarded'):
+            user.balance += reward_amount
+            request.session['wallet_rewarded'] = True
+            user.save()
+
+            messages.success(request, f'You have been awarded Rs {reward_amount}  for posting {post_count} posts today!')
+    except CustomUser.DoesNotExist:
+        pass    

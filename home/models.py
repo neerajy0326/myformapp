@@ -10,6 +10,7 @@ import magic
 from django.utils import timezone
 
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email,username, full_name, contact_number, password=None):
         if not email:
@@ -66,6 +67,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     followers_count = models.PositiveIntegerField(default=0)
     following_count = models.PositiveIntegerField(default=0)
     last_seen_notification = models.DateTimeField(blank=True, null=True)
+    owned_coupons = models.CharField(max_length=500, blank=True)
       
     
     
@@ -120,7 +122,8 @@ class BlogPost(models.Model):
           pub_date = models.DateTimeField(auto_now_add=True)
           author = models.CharField(max_length=100) 
           media = models.FileField(upload_to='post_media/', blank=True, null=True, validators=[validate_media_type]) 
-          likes_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts')         
+          likes_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts') 
+          timestamp = models.DateTimeField(auto_now=True)        
           
           @property
           def like_count(self):

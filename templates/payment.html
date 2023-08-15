@@ -16,6 +16,33 @@
             background-position: center;
             background-attachment: fixed;
           }
+
+          
+.owned-coupons {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+
+.owned-coupons p {
+    font-weight: bold;
+}
+
+
+.owned-coupons ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.owned-coupons li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
         </style>
 
 </head>
@@ -44,13 +71,28 @@
           {{ plan.name }}
       </p>
   </div>
+  {% if user.owned_coupons %}
+  <div class="owned-coupons">
+    <p>Available Coupons:</p>
+    <ul>
+        {% for coupon_code in owned_coupon_codes %}
+            <li>{{ coupon_code }}
+              
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
     <div class="last-content">
+     
+    
       <form method="post">
        
         <div class="mb-3">
+
         
-            <label for="coupon_code" class="form-label">Coupon Code</label>
+            <label for="coupon_code" class="form-label">Enter Coupon Code</label>
             <input type="text" name="coupon_code" class="form-control">
         </div>
         {% if updated_price < plan.price %}
