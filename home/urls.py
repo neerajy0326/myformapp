@@ -50,6 +50,7 @@ urlpatterns = [
     path('clear_notifications/', views.clear_notifications, name='clear_notifications'),
     path('dice_roll_game/', views.dice_roll_game, name='dice_roll_game'),
     path('game_history/', views.game_history, name='game_history'),
+    path('clear_all_games/', views.clear_all_games, name='clear_all_games'),
 
     
   

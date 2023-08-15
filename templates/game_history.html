@@ -126,15 +126,32 @@
         <div class="col-md-6">
             
           <div class="profile-card blog-list-profile-card">
+            {% if messages %}
+            {% for message in messages %}
+              {% if message.tags == 'success' %}
+                <div class="alert alert-success">
+                  {{ message }}
+                </div>
+              {% elif message.tags == 'error' %}
+                <div class="alert alert-danger">
+                  {{ message }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
            
               <div class="header-container row align-items-center">
                
                 <h2 class="col-md-9">History </h2>
                
             </div>
+            <form method="post" action="{% url 'clear_all_games' %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Clear All History</button>
+          </form>
          
                 <div class="container mt-5">
-                    
+                 
                     <ul>
                         {% for game in game_history %}
                         <li>

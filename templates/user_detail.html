@@ -169,6 +169,7 @@
                 
                 <p>{{ user.full_name }}</p>
                 <div class="follower-following">
+                  <a><span class="count"> {{ user_blogs_count }} </span>posts</a>
                   <a href="{% url 'user_followers' user.pk %}">
                       <span class="count">{{ user.followers_count }}</span> Followers
                   </a>

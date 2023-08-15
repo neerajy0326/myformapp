@@ -584,7 +584,7 @@ def payment(request, plan_id):
                   amount=updated_price_decimal,
                   description=f'Payment for Verification Badge'
                   )
-                  VerificationBadge.objects.create(user=user, plan=plan, verified=True)
+                  VerificationBadge.objects.create(user=user, plan=plan, verified=True , verification_expiration=expiration_date)
                   send_verification_success_email(user, plan)
                   messages.success(request, 'Payment successful. You are now verified!')
                   if 'updated_price' in request.session:
@@ -824,7 +824,7 @@ def dice_roll_game(request):
         
         if won:
             reward = bet_amount
-            request.user.balance += reward
+            request.user.balance += reward*4
         else:
             request.user.balance -= bet_amount
         
@@ -846,6 +846,16 @@ def dice_roll_game(request):
 def game_history(request):
     game_history = DiceRollGame.objects.filter(user=request.user).order_by('-timestamp')
     for game in game_history:
-        game.won_amount = game.bet_amount
+        game.won_amount = game.bet_amount*4
     return render(request, 'game_history.html', {'game_history': game_history})
 
+def clear_all_games(request):
+    game_history = DiceRollGame.objects.filter(user=request.user)
+    
+    if game_history.exists():
+        game_history.delete()
+        messages.success(request, 'All game history cleared successfully.')
+    else:
+        messages.info(request, 'No game history to clear.')
+
+    return redirect('game_history')
