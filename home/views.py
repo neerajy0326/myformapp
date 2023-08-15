@@ -856,6 +856,9 @@ def game_history(request):
         game.won_amount = game.bet_amount*4
     return render(request, 'game_history.html', {'game_history': game_history})
 
+
+
+
 def clear_all_games(request):
     game_history = DiceRollGame.objects.filter(user=request.user)
     
