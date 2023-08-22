@@ -123,7 +123,7 @@ def delete_account(request):
     if request.method == 'POST':
          user = request.user
          user.delete()
-         logout(request)  # Log the user out after deleting their account
+         logout(request)  
          return redirect('login_page')  
    
 
@@ -219,7 +219,7 @@ def edit_profile(request):
                         default_storage.delete(user.profile_picture.name)
                     except:
                         pass
-                # Remove the profile picture from the database and clear the profile_picture field
+             
                 user.profile_picture.delete()
                 user.profile_picture = None
                 user.save()
@@ -229,7 +229,7 @@ def edit_profile(request):
                 form.save()
                 messages.success(request, 'Your profile has been updated.')
                 
-            return redirect('profile')  # Redirect to the profile page after profile edit
+            return redirect('profile') 
         else:
             messages.error(request, 'Contact number is required before saving')
 
@@ -248,12 +248,12 @@ def reset(request):
             user = None
 
         if user:
-            # Generate the password reset token
+           
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(str(user.pk))) 
             
             ngrok_url = settings.NGROK_URL
-            # Build the reset link
+           
             
             reset_url = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
             reset_link = f'{ngrok_url}{reset_url}'
@@ -326,7 +326,7 @@ def register(request):
             password = form.cleaned_data['password']
             username = form.cleaned_data['username']
             user = get_user_model().objects.create_user(email=email, contact_number=contact_number, full_name=full_name,username=username)
-            user.set_password(password)  # Set the password properly
+            user.set_password(password)  
 
             user.save()
             messages.success(request, 'Account has been successfully created for user ' + full_name)
@@ -435,7 +435,7 @@ def blog_update(request, pk):
    
     blog_post = get_object_or_404(BlogPost, pk=pk)
     if request.method == 'POST':
-        form = BlogPostForm(request.POST, instance=blog_post)
+        form = BlogPostForm(request.POST,request.FILES, instance=blog_post)
         if form.is_valid():
             form.save()
             return redirect('blog_list')

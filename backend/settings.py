@@ -40,7 +40,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = [
     
-    'django.contrib.auth.backends.ModelBackend',  # For admin panel login with username
+    'django.contrib.auth.backends.ModelBackend',  
 ]
 NGROK_URL = 'https://myform.tech'
 

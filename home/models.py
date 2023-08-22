@@ -53,7 +53,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     contact_number = models.CharField(max_length=10)
     email = models.EmailField(unique=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    is_staff = models.BooleanField(default=False)  # Add the is_staff attribute
+    is_staff = models.BooleanField(default=False)  
     is_superuser = models.BooleanField(default=False)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
