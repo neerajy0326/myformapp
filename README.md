@@ -3,7 +3,7 @@
 This project is a Django-based social media platform where users can create an account, share posts, interact with other posts through likes and comments, and more exciting features.
 
 ## Getting Started
-
+Directly access at www.myform.tech , deployed on aws cloud service.
 To run this project locally, follow the instructions below.
 
 
@@ -25,6 +25,7 @@ Make sure you have the following software installed:
 3. python3 manage.py runserver
    
 Visit http://localhost:8000/ in your web browser to access the application.
+
 
 ## Technologies Used
     > Django - The web framework used
