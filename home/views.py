@@ -38,6 +38,16 @@ from .models import CustomUser, UserConnection ,Notification
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 
+
+
+def users(request):
+    users = CustomUser.objects.all()  # Replace with your User model
+    return render(request, 'users.html', {'users': users})
+
+def chat_with_user(request, user_id):
+    user = get_object_or_404(CustomUser, pk=user_id)  # Replace with your User model
+    return render(request, 'chat_page.html', {'user': user})
+
 @login_required
 def follow_user(request,pk):
     user_to_follow = get_object_or_404(CustomUser, pk=pk)
@@ -488,15 +498,17 @@ def user_list(request):
 def user_detail(request, pk):
     request.user.last_active = timezone.now()
     request.user.save()
+    
     user = get_object_or_404(CustomUser, pk=pk)
     user_blogs_count = BlogPost.objects.filter(author=user.username).count()
     user_blogs = BlogPost.objects.filter(author=user.username).order_by('-pub_date')
+    followers = UserConnection.objects.filter(following=user)
     is_following = UserConnection.objects.filter(
         follower=request.user,
         following=user
     ).exists()
   
-    return render(request, 'user_detail.html', {'user': user ,'user_blogs_count': user_blogs_count, 'user_blogs': user_blogs ,'is_following': is_following}  )
+    return render(request, 'user_detail.html', {'user': user ,'user_blogs_count': user_blogs_count, 'user_blogs': user_blogs ,'is_following': is_following ,'followers': followers}  )
 
 
 @login_required

@@ -177,14 +177,7 @@
                       <span class="count">{{ user.following_count }}</span> Following
                   </a>
               </div>
-                {% if user != request.user %}
-                {% if is_following %}
-                <a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#unfollowModal">Following</a>
-                {% else %}
-                    <a href="{% url 'follow_user' user.pk %}" class="btn btn-primary">Follow</a>
-                {% endif %}
-            {% endif %}
-          
+               
            
                             
               
@@ -195,10 +188,19 @@
                 
                 
                 <p>Joined on {{  user.date_joined|timezone:"Asia/Kolkata"|date:'F d, Y ' }}</p>
-                <div>
-               
-                       <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
-                </div>
+                {% if user != request.user %}
+                {% if is_following %}
+                <a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#unfollowModal">Following</a>
+                {% else %}
+                    <a href="{% url 'follow_user' user.pk %}" class="btn btn-primary">Follow</a>
+                {% endif %}
+                {% if user != request.user %}
+    {% if is_following %}
+        <a href="{% url 'chat_with_user' user.id %}" class="btn btn-success">Message</a>
+    {% endif %}
+{% endif %}
+            {% endif %}
+          
                   <div>
                     <h4> {{ user_blogs_count }} Posts</h4>
                     <ul>

@@ -3,8 +3,8 @@ from django.urls import path
 from home import views
 from django.conf import settings
 from django.conf.urls.static import static
-
-
+from django.urls import path, include
+from home.routing import websocket_urlpatterns 
 
 urlpatterns = [
     path('' , views.login_page , name="home"),
@@ -29,7 +29,7 @@ urlpatterns = [
     path('profile/edit_profile/delete_account/', views.delete_account, name='delete_account'),
     path('user_list/',views.user_list, name='user_list'),
     path('user_detail/<int:pk>/', views.user_detail, name='user_detail'),
-    path('chat/',views.chat, name='chat'),
+     path('chat/',views.chat, name='chat'),
     path('profile/account_settings/', views.account_settings, name='account_settings'),
     path('blog_list/post/<int:post_pk>/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
     path('reset/<str:uidb64>/<str:token>/', views.password_reset_confirm, name='password_reset_confirm'),
@@ -51,6 +51,9 @@ urlpatterns = [
     path('dice_roll_game/', views.dice_roll_game, name='dice_roll_game'),
     path('game_history/', views.game_history, name='game_history'),
     path('clear_all_games/', views.clear_all_games, name='clear_all_games'),
+    path('users/', views.users, name='users'),
+    path('chat/<int:user_id>/', views.chat_with_user, name='chat_with_user'),
+    path('ws/', include(websocket_urlpatterns)),
 
     
   

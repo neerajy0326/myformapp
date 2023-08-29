@@ -1,0 +1,221 @@
+
+{% load static %}{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'style2.css' %}">
+        <link rel="stylesheet" href="{% static 'style3.css' %}">
+       <style>
+        body {
+          background-image: url("{% static 'bp.png' %}");
+          background-size: cover;
+        
+         
+        }
+       
+        .contacts-list {
+          list-style: none;
+          padding: 0;
+      }
+  
+      .contacts-list-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+      }
+  
+      .user-profile-pic {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-right: 10px;
+          margin-left: 10px;
+      }
+  
+      .user-info {
+          display: flex;
+          align-items: center;
+      }
+  
+      .user-info a {
+          text-decoration: none;
+          color: #000;
+          font-weight: bold;
+          margin-left: 10px;
+      }
+  
+      .green-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: green;
+        margin-left: 5px;
+    }
+    .red-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: red;
+      margin-left: 5px;
+    }
+    .orange-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: orange;
+      margin-left: 5px;
+    }
+    
+    .active-status {
+        margin-left: auto;
+    }
+    .active-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-left: -25px; 
+      margin-top: 40px;
+      
+      z-index: 2;
+    }
+      .user-detail {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-pic-wrapper {
+        flex: 0 0 auto;
+        margin-right: 15px;
+    }
+
+    .user-info {
+        flex: 1 1 auto;
+    }
+
+    .user-profile-pic-modal {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .user-detail h3 {
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+    .blue-fill-icon {
+        color: #007fff;
+      }
+      .card-body {
+       
+        {% if user.verified_badge %}
+        background-image: linear-gradient(#c3ddc9, #73e0f0d2);
+        border-radius: 10px;
+        {% else %}
+        background-color: #f9f9f9; 
+        {% endif%}   
+    }
+ 
+ 
+  
+      </style>
+
+ 
+    
+
+
+    </head>
+	
+	<body>
+   
+		<div  class="container-fluid h-100">
+			<div  class="row justify-content-center h-100  ">
+				<div  style="width:550px; " class="col-md-4 col-xl-3 chat h-100 mt-4">
+                    <div class="card mb-sm-3 mb-md-0 contacts_card">
+					<div class="card-header">
+						<div class="input-group">
+							<input type="text" placeholder="Search..." name="" class="form-control search">
+							<div class="input-group-prepend">
+								<span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+							</div>
+						</div>
+					</div>
+          <div  class="card-body contacts_body">
+            <ul class="contacts-list">
+                {% for user in users %}
+                    {% if user != request.user %}
+                    <li class="blog-list-item custom-marker" 
+                    
+                    style="margin-bottom: 10px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                      <div class="user-info">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}'s photo" class="user-profile-pic">
+                        {% else %}
+                        <img src="{% static 'df.jpeg' %}" alt="Default Profile Pic" class="user-profile-pic">
+                        {% endif %}
+                        {% if user.show_active_status %}
+                        {% if user.last_active is not None and user.last_active|format_last_active == "active now" %}
+                            <span class="active-dot green-dot"></span>
+                        {% elif user.last_active is None %}
+                            <span class="active-dot red-dot"></span>
+                        {% elif user.last_active is not None and user.last_active|format_last_active != "active now" %}
+                            <span class="active-dot orange-dot"></span>
+                        {% endif %}
+                    {% endif %}
+                        <a href="{% url 'chat_with_user' user.id %}">{{ user.username }}</a>
+                        {% if user.verified_badge %}
+                         <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
+                        {% endif %}
+                      
+                    </div>
+                    <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+            </ul>
+        </div>
+					<div class="card-footer"></div>
+				</div></div>
+				
+			</div>
+		</div>
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+      <div class="container-fluid d-flex align-items-center">
+        
+          <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+          <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
+          <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
+         
+          <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+          <a class="navbar-brand" href="{% url 'profile' %}">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
+            {% else %}
+            
+            <img src="{% static 'df.jpeg' %}" alt="Profile Picture" class="profile-picture-icon">
+            {% endif %}
+        </a>
+      </div>
+  </nav>
+  <style>
+    .profile-card {
+      padding-bottom: 80px; 
+    }
+  </style>
+  
+       
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+	</body>
+</html>

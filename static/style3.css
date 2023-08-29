@@ -47,7 +47,7 @@ html {
   border-radius: 0 0 15px 15px !important;
   border-top: 0 !important;
   bottom: 0;
-  position: absolute;
+  
   width: 100%;
 }
 .container {
@@ -285,6 +285,8 @@ html {
 
   .contacts_card {
     margin-bottom: 15px !important;
+    width: 400px; /* Change the width as needed */
+    height: 600px;
   }
 
   .contacts_body {

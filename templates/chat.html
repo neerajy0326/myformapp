@@ -125,55 +125,8 @@
       }
   
       </style>
-      <script>
-        // Function to load chat for a selected user
-        function loadChat(user_date_joined, user_name, user_status, profile_pic_url) {
-            const chatBox = document.querySelector('.chat-box');
-            let dotColor = '';
-        
-        if (user_status === "active now") {
-            dotColor = 'green';
-        } else if (user_status === "inactive") {
-            dotColor = 'red';
-        } else {
-            dotColor = 'orange';
-        }
-    
-            const chatHeader = `
-                <div class="chat-header">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#userDetailModal" onclick="openUserDetail('${user_name}','${profile_pic_url}','${user_date_joined}')">
-                    <div class="user-info">
-                        <img src="${profile_pic_url}" alt="${user_name}'s photo" class="user-profile-pic" >
-                        <a>${user_name}</a>
-                      
-                        
-                        <span class="${dotColor}-dot"></span>
-                        <span class="active-status">${user_status}</span>
-                    </div>
-                </div>
-                <hr>
-                <div class="chat-body">
-                   
-                   
-                </div>
-            `;
-    
-            
-            chatBox.innerHTML = chatHeader;
-        }
-        function openUserDetail(user_name ,profile_pic_url ,user_date_joined) {
-            const userDetailContent = document.getElementById('userDetailContent');
-  
-            userDetailContent.innerHTML = `           
-             <div class="user-detail">
-                <img src="${profile_pic_url}" alt="${user_name}'s photo" class="user-profile-modal" style="width: 250px; height: 250px;" >
-                <h3>${user_name}</h3>
-              
-                
-            </div>
-            `;
-        }
-    </script>
+
+ 
     
 
 
@@ -198,7 +151,7 @@
                 {% for user in users %}
                     {% if user != request.user %}
                     <li class="blog-list-item custom-marker" 
-                    onclick="loadChat('{{ user.date_joined}}', '{{ user.username }}', '{{ user.last_active|format_last_active }}', '{% if not user.profile_picture %}{% static 'df.jpeg' %}{% else %}{{ user.profile_picture.url }}{% endif %}')"
+                    
                     style="margin-bottom: 10px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
                       <div class="user-info">
                         {% if user.profile_picture %}
@@ -220,32 +173,7 @@
         </div>
 					<div class="card-footer"></div>
 				</div></div>
-				<div class="col-md-8 col-xl-6 chat h-100 mt-4">
-					<div class="card">
-                        <div class="card-body chat-box">
-                        
-                        </div>
-                        
-                        <div class="card-footer">
-                                <form id="send-message-form">
-                                    <div class="input-group">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-                                        </div>
-                                        <input type="text" name="" id="input-message" class="form-control type_msg" placeholder="Type your message...">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-secondary" type="submit">
-                                                <span class="input-group-text send_btn">
-                                                    <i class="fas fa-location-arrow"></i>
-                                                </span>
-                                            </button>
-
-                                        </div>
-                                </div>
-                                </form>
-                            </div>
-                    </div>
-				</div>
+				
 			</div>
 		</div>
     <nav class="navbar fixed-bottom navbar-light bg-light">

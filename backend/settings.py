@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend',
+    'channels',
     
 
     
@@ -97,8 +98,15 @@ MIDDLEWARE = [
     
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
+ASGI_APPLICATION = 'backend.asgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -118,7 +126,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+
 
 
 # Database

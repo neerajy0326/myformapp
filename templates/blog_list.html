@@ -79,7 +79,7 @@
   }
   
     body {
-      background-image: url("{% static 'bp.png' %}");
+      background-image: url("https://media.istockphoto.com/id/1135331282/vector/social-media-engagement-isometric-3d-concept-illustration.jpg?s=612x612&w=0&k=20&c=8U0FSib-MORxbvsHbLEWCoa4aufovB6TobUlfD18f6w=");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -187,7 +187,7 @@
           <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
          
-          <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+          <a class="navbar-brand" href="{% url 'users' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'profile' %}">
             {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">
