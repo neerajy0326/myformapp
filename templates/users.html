@@ -1,5 +1,5 @@
 
-{% load static %}{% load custom_filters %}
+{% load static %} {% load tz %}{% load custom_filters %}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -127,6 +127,16 @@
         background-color: #f9f9f9; 
         {% endif%}   
     }
+    .msg-count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      position: relative;
+      top: -8px;
+      left: -4px;
+    }
  
  
   
@@ -139,6 +149,8 @@
     </head>
 	
 	<body>
+
+  
    
 		<div  class="container-fluid h-100">
 			<div  class="row justify-content-center h-100  ">
@@ -155,7 +167,7 @@
           <div  class="card-body contacts_body">
             <ul class="contacts-list">
                 {% for user in users %}
-                    {% if user != request.user %}
+                  
                     <li class="blog-list-item custom-marker" 
                     
                     style="margin-bottom: 10px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
@@ -178,12 +190,23 @@
                         {% if user.verified_badge %}
                          <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
                         {% endif %}
-                      
-                    </div>
-                    <p class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
+
+                    
+                        {% with user_action=user_actions|dict_key:user.id %}
+                        <span class="ml-3">
+                            {% if user_action.action == 'unread' %}
+                                <span class="badge badge-danger">New messages</span>
+                            {% elif user_action.action == 'sent' %}
+                              <span style="font-size: smaller;">  Sent at {{ user_action.timestamp|timezone:"Asia/Kolkata"|date:' H:i,M d ' }}</span>
+                            {% else %}
+                               
+                            {% endif %}
+                        </span>
+                    {% endwith %}
+                    </div>     
                     </li>
-                    {% endif %}
-                    {% endfor %}
+               {% endfor %} 
+             
             </ul>
         </div>
 					<div class="card-footer"></div>
@@ -194,11 +217,14 @@
     <nav class="navbar fixed-bottom navbar-light bg-light">
       <div class="container-fluid d-flex align-items-center">
         
-          <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
-          <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
-          <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
-         
-          <a class="navbar-brand" href="{% url 'chat' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+        <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+        <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
+        <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
+       
+       <a class="navbar-brand" href="{% url 'users' %}"><i class="bi bi-chat" style="font-size: 24px;"></i><span class="msg-count">{{ unread_conversations_count }}</span></a>
+          
+           
+       
           <a class="navbar-brand" href="{% url 'profile' %}">
             {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">

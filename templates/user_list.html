@@ -121,6 +121,16 @@
     .blue-fill-icon {
       color: #007fff;
     }
+    .msg-count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      position: relative;
+      top: -8px;
+      left: -4px;
+    }
  
 
 
@@ -191,11 +201,11 @@
     <nav class="navbar fixed-bottom navbar-light bg-light">
       <div class="container-fluid d-flex align-items-center">
         
-          <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
+        <a class="navbar-brand" href="{% url 'blog_list' %}"><i class="bi bi-collection" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'user_list' %}"><i class="bi bi-people" style="font-size: 24px;"></i></a>
           <a class="navbar-brand" href="{% url 'blog_create' %}"><i class="bi bi-file-plus" style="font-size: 24px;"></i></a>
          
-          <a class="navbar-brand" href="{% url 'users' %}"><i class="bi bi-chat" style="font-size: 24px;"></i></a>
+         <a class="navbar-brand" href="{% url 'users' %}"><i class="bi bi-chat" style="font-size: 24px;"></i><span class="msg-count">{{ unread_conversations_count }}</span></a>
           <a class="navbar-brand" href="{% url 'profile' %}">
             {% if user.profile_picture %}
                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture-icon">

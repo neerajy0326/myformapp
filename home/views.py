@@ -14,7 +14,7 @@ from .models import BlogPost ,WalletTransaction
 from .models import DiceRollGame
 import random
 from .models import Coupon
-from .forms import BlogPostForm,CommentForm
+from .forms import BlogPostForm,CommentForm , ChatMessageForm
 import os
 from django.db.models import Q
 from django.utils import timezone
@@ -34,19 +34,90 @@ from .models import VerificationPlan, VerificationBadge
 from decimal import Decimal
 from django.http import JsonResponse
 import time
-from .models import CustomUser, UserConnection ,Notification
+from .models import CustomUser, UserConnection ,Notification , ChatMessage
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 
 
 
-def users(request):
-    users = CustomUser.objects.all()  # Replace with your User model
-    return render(request, 'users.html', {'users': users})
+
+
+@login_required
+def chat(request):
+    if request.user.is_authenticated:
+           if request.user.show_active_status:
+            request.user.last_active = timezone.now()
+            request.user.save()
+    users = CustomUser.objects.exclude(pk=request.user.pk)  
+    return render(request, "chat.html", {'users': users})
 
 def chat_with_user(request, user_id):
-    user = get_object_or_404(CustomUser, pk=user_id)  # Replace with your User model
-    return render(request, 'chat_page.html', {'user': user})
+    user = get_object_or_404(CustomUser, pk=user_id)  
+    chats = ChatMessage.objects.filter(
+        Q(sender=request.user, receiver=user) | Q(sender=user, receiver=request.user)
+    ).order_by('timestamp')
+    if request.method == 'POST':
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+            chat = form.save(commit=False)
+            chat.sender = request.user
+            chat.receiver = user
+            
+            chat.save()
+
+            
+    else:
+        form = ChatMessageForm()
+
+    unread_messages = chats.filter(receiver=request.user, is_read=False)
+    unread_messages.update(is_read=True)    
+        
+    return render(request, 'chat_page.html', {'user': user  , 'chats' : chats , 'form': form})
+
+def delete_message(request, message_id):
+    message = get_object_or_404(ChatMessage, id=message_id, sender=request.user)
+    message.delete()
+    return HttpResponse(status=204)
+
+
+
+
+def users(request):
+    
+    users = CustomUser.objects.exclude(id=request.user.id)
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+  
+    user_actions = {}
+
+    for user in users:
+        try:
+            latest_message = ChatMessage.objects.filter(
+                Q(sender=request.user, receiver=user) | Q(sender=user, receiver=request.user)
+            ).latest('timestamp')
+
+            if latest_message.sender == request.user:
+                user_actions[user.id] = {'action': 'sent', 'timestamp': latest_message.timestamp}
+            elif not latest_message.is_read:
+            # Check if user.id is in the dictionary before accessing it
+              if user.id not in user_actions:
+                user_actions[user.id] = {'action': 'unread', 'unread_count': 1, 'timestamp': latest_message.timestamp}
+              else:
+                # Check and increment the unread count
+                unread_count = user_actions[user.id].get('unread_count', 0)
+                user_actions[user.id] = {'action': 'unread', 'unread_count': unread_count + 1, 'timestamp': latest_message.timestamp}
+            else:
+                user_actions[user.id] = {'action': None}
+        except ChatMessage.DoesNotExist:
+            user_actions[user.id] = {'action': None}
+
+    context = {
+        'users': users,
+        'user_actions': user_actions,
+        'unread_conversations_count': unread_conversations_count
+    }
+
+    return render(request, 'users.html', context)
+
 
 @login_required
 def follow_user(request,pk):
@@ -119,14 +190,7 @@ def user_following(request, pk):
 
 
 
-@login_required
-def chat(request):
-    if request.user.is_authenticated:
-           if request.user.show_active_status:
-            request.user.last_active = timezone.now()
-            request.user.save()
-    users = CustomUser.objects.exclude(pk=request.user.pk)  # Exclude the logged-in user from the list
-    return render(request, "chat.html", {'users': users})
+
 
 @login_required
 def delete_account(request):
@@ -309,6 +373,8 @@ def password_reset_confirm(request, uidb64, token):
 
 @login_required
 def profile(request):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
     if request.user.show_active_status:
         request.user.last_active = timezone.now()
         request.user.save()
@@ -317,7 +383,7 @@ def profile(request):
     my_blogs_count = BlogPost.objects.filter(author=user).count()
     unread_notifications = Notification.objects.filter(user=request.user, seen=False).count()
 
-    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count, 'unread_count': unread_notifications})
+    return render(request, 'profile.html', {'my_blogs_count': my_blogs_count, 'unread_count': unread_notifications ,'unread_conversations_count' : unread_conversations_count})
    
 
 def register(request):
@@ -352,16 +418,21 @@ def register(request):
 
 @login_required
 def blog_list(request):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
+    
     request.user.last_active = timezone.now()
     request.user.save()
     
     following_usernames = UserConnection.objects.filter(follower=request.user).values_list('following__username', flat=True)
     posts = BlogPost.objects.filter(Q(author__in=following_usernames) | Q(author=request.user.username)).order_by('-pub_date')
-    return render(request, 'blog_list.html', {'posts': posts})
+    return render(request, 'blog_list.html', {'posts': posts , 'unread_conversations_count':unread_conversations_count})
 
 
 @login_required
 def blog_detail(request, pk):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
     request.user.last_active = timezone.now()
     request.user.save()
     blog_post = get_object_or_404(BlogPost, pk=pk)
@@ -392,7 +463,7 @@ def blog_detail(request, pk):
     else:
         form = CommentForm()
 
-    return render(request, 'blog_detail.html', {'blog_post': blog_post, 'comments': comments, 'form': form})
+    return render(request, 'blog_detail.html', {'blog_post': blog_post, 'comments': comments, 'form': form ,'unread_conversations_count':unread_conversations_count})
 
 
 
@@ -415,6 +486,8 @@ def delete_comment(request, post_pk, comment_id):
 
 @login_required
 def blog_create(request):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
     
     request.user.last_active = timezone.now()
     request.user.save()
@@ -435,7 +508,7 @@ def blog_create(request):
             messages.error(request, 'There was an error. Please correct the form and try again.')
     else:
         form = BlogPostForm()
-    return render(request, 'blog_form.html', {'form': form})
+    return render(request, 'blog_form.html', {'form': form , 'unread_conversations_count':unread_conversations_count})
 
 
 @login_required
@@ -474,17 +547,21 @@ def blog_delete(request, pk):
 
 @login_required
 def my_blogs(request):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
     if request.user.show_active_status:
             request.user.last_active = timezone.now()
             request.user.save()
     current_user = request.user.username  
     my_blogs = BlogPost.objects.filter(author=current_user).order_by('-pub_date')
     my_blogs_count = my_blogs.count()
-    return render(request, 'my_blogs.html', {'my_blogs': my_blogs, 'my_blogs_count': my_blogs_count})
+    return render(request, 'my_blogs.html', {'my_blogs': my_blogs, 'my_blogs_count': my_blogs_count ,'unread_conversations_count':unread_conversations_count})
 
 
 @login_required
 def user_list(request):
+    unread_conversations_count = ChatMessage.objects.filter(receiver=request.user, is_read=False).values('sender').distinct().count()
+
     
     if request.user.show_active_status:
             request.user.last_active = timezone.now()
@@ -493,7 +570,7 @@ def user_list(request):
 
     following_users = UserConnection.objects.filter(follower=request.user).values_list('following__id', flat=True)
 
-    return render(request, 'user_list.html', {'users': users , 'following_users': following_users})
+    return render(request, 'user_list.html', {'users': users , 'following_users': following_users,'unread_conversations_count':unread_conversations_count})
 
 def user_detail(request, pk):
     request.user.last_active = timezone.now()

@@ -14,7 +14,16 @@ def localtime(value, timezone_name='Asia/Kolkata'):
         return timezone.localtime(value, timezone_name)
     else:
         return timezone.localtime(value)
-    
+
+
+
+
+register = template.Library()
+
+@register.filter(name='dict_key')
+def dict_key(d, k):
+    return d.get(k, None)
+
 
 @register.filter(name='format_last_active')
 def format_last_active(last_active):

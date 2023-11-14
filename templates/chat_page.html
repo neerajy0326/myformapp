@@ -1,4 +1,4 @@
-{% load static %}{% load custom_filters %}
+{% load static %} {% load tz %}{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +16,38 @@
     <link rel="stylesheet" href="{% static 'style2.css' %}">
         <link rel="stylesheet" href="{% static 'style3.css' %}">
         <style>
+
+
+            .card-body.chat-box {
+                max-height: 500px; /* Set the maximum height of the chat box */
+                overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
+            }
+
+            .received-message {
+                background-color: #e0e0e0;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+            
+            .sent-message {
+                background-color: #4CAF50;
+                color: white;
+                padding: 5px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+                align-self: flex-end;
+              
+                
+            }
+          
+          
+            
+            .timestamp {
+                font-size: 10px;
+                color: #555;
+            }
+
             body {
                 background-image: url("{% static 'bp.png' %}");
                 background-size: cover;
@@ -37,6 +69,19 @@
                 align-items: center;
                 background-color: rgba(0, 0, 0, 0.3) !important;
             }
+
+            .options-dropdown {
+                display: none;
+               
+            }
+            .message-options {
+                display: flex;
+                justify-content: flex-end;
+               
+            }
+          
+           
+          
         
             .user-info a {
                 text-decoration: none;
@@ -86,9 +131,12 @@
               border-radius: 50%;
               margin-left: -25px; 
               margin-top: 40px;
-              
               z-index: 2;
             }
+
+        
+            
+           
         </style>
 </head>
 <body>
@@ -109,36 +157,69 @@
                             <span class="active-dot orange-dot"></span>
                         {% endif %}
                     {% endif %}
-                <a style="margin-top: 15px; margin-bottom: 15px;">{{ user.username }}</a>
+                <a style="margin-top: 15px; margin-bottom: 15px;">{{ user.username }} </a> 
+                
                 {% if user.verified_badge %}
                  <i class="bi bi-patch-check-fill blue-fill-icon" style="margin-left: 5px;"></i>
                 {% endif %}
                 <p style="position: absolute; top: 10px; right: 10px;" class="active-status">{% if user.show_active_status %}{{ user.last_active|format_last_active }}{% endif %}</p>
                 <hr>
             </div>
+
             
             <div id="chat-box" class="card-body chat-box">
-            
+                {% for chat in chats %}
+                    <div class="{% if chat.sender == request.user %}sent-message{% else %}received-message{% endif %}">
+                        <div class="message-content">
+                           <p>{{ chat.content }}</p> 
+                                {% if chat.sender == request.user %}
+                               
+                                      <div class="message-options" onclick="toggleOptions(this)">
+                                          <i class="bi bi-three-dots-vertical "></i>
+                                          <div class="options-dropdown">
+                                          
+                                              <button class="delete-message-btn" data-message-id="{{ chat.id }}">Delete</button>
+                                          </div>
+                                      </div>
+                                  
+                              {% endif %}
+                            <span class="timestamp">{{ chat.timestamp }}</span>
+                        </div>
+                     
+                        {% if not chat.is_read and chat.sender == request.user %}
+                        <span class="badge badge-secondary">Sent</span>
+                    {% elif chat.is_read and chat.sender == request.user %}
+                        <span class="badge badge-success">Seen</span>
+                    {% endif %}
+
+                          
+
+                    </div>
+                {% endfor %}
             </div>
             
+            <form method="post">
             <div class="card-footer">
                     
                         <div class="input-group">
                             <div class="input-group-append">
                                 <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
                             </div>
-                            <input type="text" name="" id="message-input" class="form-control type_msg" placeholder="Type your message...">
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" id="send-button">
+                            
+                             <input type="text" name="content" id="{{ form.content.id_for_label }}" class="form-control type_msg" placeholder="Type your message...">
+                              <div class="input-group-append">
+                                <button class="btn btn-secondary" type="submit" id="send-button">
                                     <span class="input-group-text send_btn">
                                         <i class="fas fa-location-arrow"></i>
                                     </span>
                                 </button>
 
-                            </div>
+                              </div>
+                           
                     </div>
                  
                 </div>
+            </form>
         </div>
     </div>
    
@@ -166,73 +247,45 @@
       }
     </style>
     
+<script>
+    function scrollToBottom() {
+        var chatBox = document.getElementById("chat-box");
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    window.onload = function () {
+        scrollToBottom();
+    };
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    function toggleOptions(element) {
+        $(element).find(".options-dropdown").toggle();
+    }
 
-    <script>
-        console.log('Script is running');
-        const sender_id = {{ request.user.id|safe }}; // This is the sender's ID
-        const receiver_id = {{ user.id|safe }};   // Replace with the user's ID
-    
-        const chatBox = document.getElementById('chat-box');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        console.log('sendButton:', sendButton); 
-    
-        function sendMessage(message, sender_id, receiver_id) {
-            console.log('sendMessage called'); 
-            if (message && receiver_id) {
-                chatSocket.send(JSON.stringify({ message, sender_id, receiver_id }));
-                messageInput.value = '';
-                console.log(sender_id,receiver_id,message)
-            }
-        }
-    
-        // Create a WebSocket connection
-        const chatSocket = new WebSocket(
-            `ws://${window.location.host}/ws/chat/${receiver_id}/`
-        );
-    
-        // Event handler for WebSocket connection open
-        chatSocket.onopen = (event) => {
-            console.log('WebSocket connection opened:', event);
-            console.log(`WebSocket connection status: ${chatSocket.readyState}`);
-        };
-
-     
-    
-        // Event handler for receiving messages from the server
-        chatSocket.onmessage = (event) => {
-            
-            const message = JSON.parse(event.data);
-             console.log('Received message:', message);
-            displayMessage(message);
-        };
-    
-        // Event handler for WebSocket connection close
-        chatSocket.onclose = (event) => {
-            console.log('WebSocket connection closed:', event);
-        };
-        
-        chatSocket.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-        function displayMessage(message) {
-            const messageElement = document.createElement('div');
-            const isSentByCurrentUser = message.sender_id === sender_id ;
-            const senderName = isSentByCurrentUser ? 'You' : 'Other User';
-            messageElement.textContent = `${senderName}: ${message.message}`;
-            chatBox.appendChild(messageElement);
-        }
-        
-        // Event handler for sending a message
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value;
-    
-            if (message) {
-                sendMessage(message, sender_id, receiver_id);
-            }
+    $(document).ready(function() {
+        $(".delete-message-btn").on("click", function(e) {
+            e.stopPropagation();  // Prevent toggling the dropdown when clicking the delete button
+            var messageId = $(this).data("message-id");
+            // You can use AJAX to send a request to delete the message
+            // For simplicity, let's assume you have a delete_message endpoint
+            $.ajax({
+                url: "/delete_message/" + messageId + "/",
+                method: "POST",
+                success: function() {
+                  
+                    location.reload();
+                },
+                error: function(error) {
+                    // Handle error
+                    console.error("Error deleting message:", error);
+                }
+            });
         });
-    </script>
-    
+    });
+</script>
+
+
+
     
 </body>
 </html>

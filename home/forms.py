@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import CustomUser ,BlogPost ,Comment
+from .models import CustomUser ,BlogPost ,Comment , ChatMessage
 
 class UserRegistrationForm(forms.ModelForm):
    
@@ -51,3 +51,9 @@ class CommentForm(forms.ModelForm):
 class PinSetupForm(forms.Form):
     pin = forms.CharField(max_length=4, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     confirm_pin = forms.CharField(max_length=4, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class ChatMessageForm(forms.ModelForm):
+    class Meta:
+        model = ChatMessage    
+        fields = ['content']

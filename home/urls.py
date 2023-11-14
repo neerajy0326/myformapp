@@ -54,6 +54,7 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('chat/<int:user_id>/', views.chat_with_user, name='chat_with_user'),
     path('ws/', include(websocket_urlpatterns)),
+    path('delete_message/<int:message_id>/', views.delete_message, name='delete_message'),
 
     
   
